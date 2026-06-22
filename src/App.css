@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#050505;
+  color:white;
+  font-family:'Poppins',sans-serif;
+  overflow-x:hidden;
+}
+
+button{
+  border:none;
+  cursor:pointer;
+  font-family:'Poppins',sans-serif;
+}
+
+input, textarea{
+  outline:none;
+  border:none;
+  font-family:'Poppins',sans-serif;
+}
+
+.app{
+  min-height:100vh;
+  background: linear-gradient(to bottom, #090909, #050505);
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+  width:100%;
+  height:85px;
+  padding:0 30px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  position:sticky;
+  top:0;
+  z-index:999;
+
+  background: rgba(0,0,0,.8);
+  backdrop-filter: blur(16px);
+
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.logo{
+  font-size:30px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.logo span{
+  color:#ff2a2a;
+}
+
+.navActions{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.icons{
+  display:flex;
+  gap:16px;
+}
+
+.icons svg{
+  cursor:pointer;
+  transition:.2s;
+}
+
+.icons svg:hover{
+  color:#ff2a2a;
+}
+
+.menuDropdown{
+  position:absolute;
+  top:90px;
+  right:30px;
+
+  background:#111;
+  border:1px solid #222;
+  border-radius:16px;
+
+  padding:10px;
+  width:200px;
+}
+
+.menuDropdown button{
+  width:100%;
+  padding:12px;
+
+  background:none;
+  color:white;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  border-radius:10px;
+}
+
+.menuDropdown button:hover{
+  background:#1a1a1a;
+}
+
+/* ================= HOME ================= */
+
+.home{
+  padding:30px;
+}
+
+.cardsGrid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap:20px;
+}
+
+.movieCard{
+  transition:.25s;
+}
+
+.movieCard:hover{
+  transform: translateY(-8px);
+}
+
+.moviePoster{
+  width:100%;
+  height:280px;
+
+  border-radius:18px;
+  overflow:hidden;
+
+  position:relative;
+
+  background:#111;
+}
+
+.moviePoster img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.movieLayer{
+  position:absolute;
+  inset:0;
+
+  background: linear-gradient(to top, rgba(0,0,0,.9), transparent);
+
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+
+  padding-bottom:20px;
+
+  opacity:0;
+  transition:.3s;
+}
+
+.moviePoster:hover .movieLayer{
+  opacity:1;
+}
+
+.movieLayer button{
+  width:55px;
+  height:55px;
+
+  border-radius:50%;
+
+  background:#ff2a2a;
+  color:white;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ================= PLAYER ================= */
+
+.playerModal{
+  position:fixed;
+  inset:0;
+
+  background: rgba(0,0,0,.92);
+  z-index:99999;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:20px;
+}
+
+.playerBox{
+  width:100%;
+  max-width:1100px;
+
+  background:#0d0d0d;
+  border:1px solid #222;
+  border-radius:22px;
+
+  overflow:hidden;
+}
+
+.playerHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:18px 22px;
+  border-bottom:1px solid #1f1f1f;
+}
+
+.close{
+  cursor:pointer;
+}
+
+.videoContainer{
+  width:100%;
+  aspect-ratio:16/9;
+}
+
+.videoContainer iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+/* ================= LOGIN ================= */
+
+.loginScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.loginBox{
+  width:100%;
+  max-width:400px;
+
+  background:#111;
+  border:1px solid #222;
+  border-radius:22px;
+
+  padding:30px;
+
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.loginBox h1{
+  font-size:30px;
+}
+
+.loginBox input{
+  padding:14px;
+  background:#0a0a0a;
+  border:1px solid #1f1f1f;
+  border-radius:12px;
+  color:white;
+}
+
+.loginBox button{
+  background:#ff2a2a;
+  color:white;
+
+  padding:14px;
+  border-radius:12px;
+
+  font-weight:600;
+}
+
+/* ================= ADMIN ================= */
+
+.adminPanel{
+  padding:30px;
+}
+
+.contentEditor{
+  background:#101010;
+  border:1px solid #1f1f1f;
+
+  border-radius:20px;
+  padding:20px;
+
+  margin-bottom:25px;
+
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.contentEditor h2{
+  font-size:24px;
+}
+
+.contentEditor h3{
+  margin-top:10px;
+}
+
+.contentEditor input,
+.contentEditor textarea{
+  width:100%;
+  padding:14px;
+
+  background:#0a0a0a;
+  border:1px solid #1f1f1f;
+
+  color:white;
+  border-radius:12px;
+}
+
+.contentEditor textarea{
+  min-height:90px;
+  resize:none;
+}
+
+/* ================= BUTTON ================= */
+
+.watchEpisode{
+  background:#ff2a2a;
+  color:white;
+
+  padding:12px 16px;
+  border-radius:12px;
+
+  font-weight:600;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+/* ================= RESPONSIVO ================= */
+
+@media(max-width:900px){
+
+  .cardsGrid{
+    grid-template-columns: repeat(3,1fr);
+  }
+
+  .moviePoster{
+    height:240px;
+  }
+
+  .logo{
+    font-size:24px;
+  }
+}
+
+@media(max-width:600px){
+
+  .cardsGrid{
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .moviePoster{
+    height:200px;
+  }
+
+  .navbar{
+    padding:0 18px;
+  }
+}
