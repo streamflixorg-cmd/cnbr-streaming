@@ -1,4 +1,12 @@
+/* =========================
+   GOOGLE FONT
+========================= */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* =========================
+   RESET
+========================= */
 
 *{
   margin:0;
@@ -15,27 +23,40 @@ body{
 
 button{
   border:none;
+  outline:none;
   cursor:pointer;
   font-family:'Poppins',sans-serif;
 }
 
-input, textarea{
+input,
+textarea{
   outline:none;
-  border:none;
   font-family:'Poppins',sans-serif;
 }
 
+/* =========================
+   APP
+========================= */
+
 .app{
   min-height:100vh;
-  background: linear-gradient(to bottom, #090909, #050505);
+  background:
+  linear-gradient(
+    to bottom,
+    #090909,
+    #050505
+  );
 }
 
-/* ================= NAVBAR ================= */
+/* =========================
+   NAVBAR
+========================= */
 
 .navbar{
   width:100%;
-  height:85px;
-  padding:0 30px;
+  height:90px;
+
+  padding:0 40px;
 
   display:flex;
   align-items:center;
@@ -45,16 +66,20 @@ input, textarea{
   top:0;
   z-index:999;
 
-  background: rgba(0,0,0,.8);
-  backdrop-filter: blur(16px);
+  background:
+  rgba(0,0,0,.75);
 
-  border-bottom:1px solid rgba(255,255,255,.05);
+  backdrop-filter:blur(16px);
+
+  border-bottom:
+  1px solid rgba(255,255,255,.05);
 }
 
 .logo{
-  font-size:30px;
+  font-size:34px;
   font-weight:800;
   cursor:pointer;
+  letter-spacing:-1px;
 }
 
 .logo span{
@@ -64,12 +89,41 @@ input, textarea{
 .navActions{
   display:flex;
   align-items:center;
-  gap:18px;
+  gap:20px;
+}
+
+.searchBar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  background:#121212;
+
+  border:
+  1px solid #1f1f1f;
+
+  padding:12px 18px;
+
+  border-radius:18px;
+
+  width:260px;
+}
+
+.searchBar input{
+  background:none;
+  border:none;
+  color:white;
+  width:100%;
+}
+
+.searchBar input::placeholder{
+  color:#777;
 }
 
 .icons{
   display:flex;
-  gap:16px;
+  align-items:center;
+  gap:18px;
 }
 
 .icons svg{
@@ -79,49 +133,61 @@ input, textarea{
 
 .icons svg:hover{
   color:#ff2a2a;
+  transform:scale(1.08);
 }
 
 .menuDropdown{
   position:absolute;
-  top:90px;
-  right:30px;
+  top:95px;
+  right:40px;
 
   background:#111;
-  border:1px solid #222;
-  border-radius:16px;
 
-  padding:10px;
-  width:200px;
+  border:
+  1px solid #222;
+
+  border-radius:18px;
+
+  padding:12px;
+
+  width:220px;
 }
 
 .menuDropdown button{
   width:100%;
-  padding:12px;
-
-  background:none;
-  color:white;
 
   display:flex;
   align-items:center;
   gap:10px;
 
-  border-radius:10px;
+  background:none;
+  color:white;
+
+  padding:14px;
+  border-radius:14px;
+
+  transition:.2s;
 }
 
 .menuDropdown button:hover{
-  background:#1a1a1a;
+  background:#1b1b1b;
 }
 
-/* ================= HOME ================= */
+/* =========================
+   HOME
+========================= */
 
 .home{
-  padding:30px;
+  padding:35px;
 }
 
 .cardsGrid{
   display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap:20px;
+
+  grid-template-columns:
+  repeat(auto-fill,minmax(240px,1fr));
+
+  gap:28px;
 }
 
 .movieCard{
@@ -129,17 +195,19 @@ input, textarea{
 }
 
 .movieCard:hover{
-  transform: translateY(-8px);
+  transform:
+  translateY(-8px);
 }
 
 .moviePoster{
-  width:100%;
-  height:280px;
-
-  border-radius:18px;
-  overflow:hidden;
-
   position:relative;
+
+  width:100%;
+  height:370px;
+
+  border-radius:24px;
+
+  overflow:hidden;
 
   background:#111;
 }
@@ -154,16 +222,22 @@ input, textarea{
   position:absolute;
   inset:0;
 
-  background: linear-gradient(to top, rgba(0,0,0,.9), transparent);
+  background:
+  linear-gradient(
+    to top,
+    rgba(0,0,0,.95),
+    rgba(0,0,0,.1)
+  );
 
   display:flex;
   align-items:flex-end;
   justify-content:center;
 
-  padding-bottom:20px;
-
   opacity:0;
+
   transition:.3s;
+
+  padding-bottom:25px;
 }
 
 .moviePoster:hover .movieLayer{
@@ -171,8 +245,8 @@ input, textarea{
 }
 
 .movieLayer button{
-  width:55px;
-  height:55px;
+  width:70px;
+  height:70px;
 
   border-radius:50%;
 
@@ -182,42 +256,231 @@ input, textarea{
   display:flex;
   align-items:center;
   justify-content:center;
+
+  transition:.25s;
 }
 
-/* ================= PLAYER ================= */
+.movieLayer button:hover{
+  transform:scale(1.1);
+}
+
+/* =========================
+   SERIES PAGE
+========================= */
+
+.seriesPage{
+  width:100%;
+}
+
+.seriesBanner{
+  position:relative;
+
+  width:100%;
+  height:72vh;
+
+  overflow:hidden;
+}
+
+.seriesBanner img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.seriesOverlay{
+  position:absolute;
+  inset:0;
+
+  background:
+  linear-gradient(
+    to top,
+    #050505 5%,
+    rgba(0,0,0,.2)
+  );
+}
+
+.seriesInfo{
+  position:absolute;
+  bottom:70px;
+  left:60px;
+
+  max-width:650px;
+
+  z-index:2;
+}
+
+.seriesInfo h1{
+  font-size:62px;
+  font-weight:800;
+  margin-bottom:18px;
+}
+
+.seriesInfo p{
+  color:#ddd;
+  font-size:18px;
+  line-height:1.8;
+}
+
+/* =========================
+   TEMPORADAS
+========================= */
+
+.seasonTabs{
+  display:flex;
+  gap:14px;
+
+  padding:35px 40px 10px;
+
+  flex-wrap:wrap;
+}
+
+.seasonTab{
+  padding:12px 24px;
+
+  border-radius:14px;
+
+  background:#121212;
+  color:white;
+
+  border:
+  1px solid #222;
+
+  transition:.25s;
+}
+
+.seasonTab:hover{
+  background:#1d1d1d;
+}
+
+.seasonTab.active{
+  background:#ff2a2a;
+  border-color:#ff2a2a;
+}
+
+/* =========================
+   EPISODES
+========================= */
+
+.episodesGrid{
+  display:grid;
+
+  grid-template-columns:
+  repeat(auto-fill,minmax(340px,1fr));
+
+  gap:25px;
+
+  padding:30px 40px 50px;
+}
+
+.episodeCard{
+  background:#111;
+
+  border:
+  1px solid #1f1f1f;
+
+  border-radius:24px;
+
+  overflow:hidden;
+
+  transition:.25s;
+}
+
+.episodeCard:hover{
+  transform:
+  translateY(-6px);
+}
+
+.episodeThumb{
+  width:100%;
+  height:210px;
+}
+
+.episodeThumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.episodeContent{
+  padding:22px;
+}
+
+.episodeContent h3{
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+.episodeContent p{
+  color:#a5a5a5;
+  line-height:1.7;
+  margin-bottom:20px;
+}
+
+.watchEpisode{
+  background:#ff2a2a;
+  color:white;
+
+  padding:13px 20px;
+
+  border-radius:14px;
+
+  font-weight:600;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+
+  transition:.25s;
+}
+
+.watchEpisode:hover{
+  transform:scale(1.03);
+}
+
+/* =========================
+   PLAYER
+========================= */
 
 .playerModal{
   position:fixed;
   inset:0;
 
-  background: rgba(0,0,0,.92);
+  background:
+  rgba(0,0,0,.92);
+
   z-index:99999;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  padding:20px;
+  padding:30px;
 }
 
 .playerBox{
   width:100%;
-  max-width:1100px;
+  max-width:1200px;
 
   background:#0d0d0d;
-  border:1px solid #222;
-  border-radius:22px;
+
+  border-radius:28px;
 
   overflow:hidden;
+
+  border:
+  1px solid #222;
 }
 
 .playerHeader{
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
 
-  padding:18px 22px;
-  border-bottom:1px solid #1f1f1f;
+  padding:22px 28px;
+
+  border-bottom:
+  1px solid #1f1f1f;
 }
 
 .close{
@@ -235,143 +498,228 @@ input, textarea{
   border:none;
 }
 
-/* ================= LOGIN ================= */
+/* =========================
+   LOGIN
+========================= */
 
 .loginScreen{
   min-height:100vh;
+
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:20px;
+
+  padding:30px;
 }
 
 .loginBox{
   width:100%;
-  max-width:400px;
+  max-width:430px;
 
-  background:#111;
-  border:1px solid #222;
-  border-radius:22px;
+  background:#101010;
 
-  padding:30px;
+  border:
+  1px solid #222;
+
+  border-radius:28px;
+
+  padding:35px;
 
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:18px;
 }
 
 .loginBox h1{
-  font-size:30px;
+  font-size:34px;
+  margin-bottom:10px;
 }
 
 .loginBox input{
-  padding:14px;
-  background:#0a0a0a;
-  border:1px solid #1f1f1f;
-  border-radius:12px;
+  background:#0c0c0c;
+
+  border:
+  1px solid #222;
+
   color:white;
+
+  padding:16px;
+
+  border-radius:14px;
 }
 
 .loginBox button{
   background:#ff2a2a;
   color:white;
 
-  padding:14px;
-  border-radius:12px;
+  padding:15px;
 
+  border-radius:14px;
+
+  font-size:16px;
   font-weight:600;
 }
 
-/* ================= ADMIN ================= */
+/* =========================
+   ADMIN
+========================= */
 
 .adminPanel{
-  padding:30px;
+  padding:35px;
 }
 
 .contentEditor{
   background:#101010;
-  border:1px solid #1f1f1f;
 
-  border-radius:20px;
-  padding:20px;
+  border:
+  1px solid #1f1f1f;
 
-  margin-bottom:25px;
+  border-radius:28px;
+
+  padding:28px;
+
+  margin-bottom:35px;
 
   display:flex;
   flex-direction:column;
-  gap:12px;
+  gap:16px;
 }
 
 .contentEditor h2{
-  font-size:24px;
+  font-size:28px;
 }
 
 .contentEditor h3{
-  margin-top:10px;
+  margin-top:20px;
+  margin-bottom:10px;
 }
 
 .contentEditor input,
-.contentEditor textarea{
+.contentEditor textarea,
+.episodeEditor input,
+.episodeEditor textarea{
   width:100%;
-  padding:14px;
 
-  background:#0a0a0a;
-  border:1px solid #1f1f1f;
+  background:#090909;
+
+  border:
+  1px solid #1f1f1f;
 
   color:white;
-  border-radius:12px;
+
+  padding:16px;
+
+  border-radius:16px;
+
+  font-size:15px;
 }
 
-.contentEditor textarea{
-  min-height:90px;
+.contentEditor textarea,
+.episodeEditor textarea{
+  min-height:120px;
   resize:none;
 }
 
-/* ================= BUTTON ================= */
+.episodeEditor{
+  background:#0d0d0d;
 
-.watchEpisode{
-  background:#ff2a2a;
-  color:white;
+  border:
+  1px solid #1d1d1d;
 
-  padding:12px 16px;
-  border-radius:12px;
+  border-radius:22px;
 
-  font-weight:600;
+  padding:20px;
+
+  margin:20px 0;
 
   display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
+  flex-direction:column;
+  gap:14px;
 }
 
-/* ================= RESPONSIVO ================= */
+/* =========================
+   RESPONSIVO
+========================= */
 
 @media(max-width:900px){
 
+  .navbar{
+    padding:0 18px;
+    height:80px;
+  }
+
+  .logo{
+    font-size:26px;
+  }
+
+  .searchBar{
+    width:160px;
+  }
+
+  .seriesBanner{
+    height:58vh;
+  }
+
+  .seriesInfo{
+    left:25px;
+    bottom:40px;
+    right:25px;
+  }
+
+  .seriesInfo h1{
+    font-size:42px;
+  }
+
+  .seriesInfo p{
+    font-size:15px;
+  }
+
+  .episodesGrid{
+    grid-template-columns:1fr;
+    padding:20px;
+  }
+
+  .seasonTabs{
+    padding:25px 20px 10px;
+  }
+
+  .home{
+    padding:20px;
+  }
+
   .cardsGrid{
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:18px;
+  }
+
+  .moviePoster{
+    height:270px;
+  }
+
+  .adminPanel{
+    padding:20px;
+  }
+
+}
+
+@media(max-width:600px){
+
+  .searchBar{
+    display:none;
+  }
+
+  .cardsGrid{
+    grid-template-columns:1fr 1fr;
   }
 
   .moviePoster{
     height:240px;
   }
 
-  .logo{
-    font-size:24px;
-  }
-}
-
-@media(max-width:600px){
-
-  .cardsGrid{
-    grid-template-columns: repeat(2,1fr);
+  .seriesInfo h1{
+    font-size:34px;
   }
 
-  .moviePoster{
-    height:200px;
-  }
-
-  .navbar{
-    padding:0 18px;
-  }
 }
