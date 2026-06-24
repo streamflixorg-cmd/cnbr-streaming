@@ -8,7 +8,9 @@ import {
   Menu,
   Play,
   Shield,
-  X
+  X,
+  Plus,
+  Trash2
 } from "lucide-react"
 
 export default function App(){
@@ -37,7 +39,11 @@ export default function App(){
   const [selectedSeason,setSelectedSeason] =
   useState(0)
 
-  const [contents] =
+  const [selectedContent,
+  setSelectedContent] =
+  useState(null)
+
+  const [contents,setContents] =
   useState([
 
     {
@@ -82,30 +88,21 @@ export default function App(){
         }
 
       ]
-    },
-
-    {
-      id:2,
-
-      type:"movie",
-
-      title:"Interestelar",
-
-      description:
-      "Uma viagem espacial para salvar a humanidade.",
-
-      cover:
-      "https://wallpapercave.com/wp/wp1817978.jpg",
-
-      banner:
-      "https://wallpapercave.com/wp/wp1817967.jpg"
     }
 
   ])
 
-  const [selectedContent,
-  setSelectedContent] =
-  useState(null)
+  const [newContent,setNewContent] =
+  useState({
+
+    type:"series",
+
+    title:"",
+    description:"",
+    cover:"",
+    banner:""
+
+  })
 
   function loginAdmin(){
 
@@ -124,11 +121,105 @@ export default function App(){
 
   }
 
+  function addContent(){
+
+    if(!newContent.title){
+
+      alert("Digite um título")
+      return
+
+    }
+
+    setContents([
+
+      ...contents,
+
+      {
+
+        id:Date.now(),
+
+        type:newContent.type,
+
+        title:newContent.title,
+
+        description:
+        newContent.description,
+
+        cover:newContent.cover,
+
+        banner:newContent.banner,
+
+        seasons:
+        newContent.type ===
+        "series"
+
+        ? [
+          {
+            number:1,
+            episodes:[]
+          }
+        ]
+
+        : []
+
+      }
+
+    ])
+
+    setNewContent({
+
+      type:"series",
+
+      title:"",
+      description:"",
+      cover:"",
+      banner:""
+
+    })
+
+  }
+
+  function addEpisode(
+    contentIndex,
+    seasonIndex
+  ){
+
+    const updated =
+    [...contents]
+
+    updated[
+      contentIndex
+    ]
+    .seasons[
+      seasonIndex
+    ]
+    .episodes.push({
+
+      number:
+      updated[
+        contentIndex
+      ]
+      .seasons[
+        seasonIndex
+      ]
+      .episodes.length + 1,
+
+      title:"Novo episódio",
+
+      description:"Descrição",
+
+      thumb:"",
+      video:""
+
+    })
+
+    setContents(updated)
+
+  }
+
   return(
 
     <div className="app">
-
-      {/* NAVBAR */}
 
       <div className="navbar">
 
@@ -202,8 +293,6 @@ export default function App(){
 
       </div>
 
-      {/* PLAYER */}
-
       {playerOpen && (
 
         <div className="playerModal">
@@ -240,8 +329,6 @@ export default function App(){
         </div>
 
       )}
-
-      {/* LOGIN */}
 
       {adminOpen &&
       !logged && (
@@ -290,8 +377,6 @@ export default function App(){
 
       )}
 
-      {/* ADMIN */}
-
       {adminOpen &&
       logged && (
 
@@ -300,207 +385,114 @@ export default function App(){
           <div className="contentEditor">
 
             <h2>
-              Painel Administrativo
+              Novo Conteúdo
             </h2>
 
-            <p>
-              Sistema funcionando.
-            </p>
+            <select
 
-          </div>
+              value={newContent.type}
 
-        </div>
+              onChange={(e)=>
+                setNewContent({
 
-      )}
+                  ...newContent,
 
-      {/* HOME */}
+                  type:e.target.value
 
-      {!selectedContent &&
-      !adminOpen && (
-
-        <div className="home">
-
-          <div className="cardsGrid">
-
-            {contents.map(item=>(
-
-              <div
-                className="movieCard"
-                key={item.id}
-              >
-
-                <div className="moviePoster">
-
-                  <img
-                    src={item.cover}
-                    alt=""
-                  />
-
-                  <div className="movieLayer">
-
-                    <button
-
-                      onClick={()=>
-                        setSelectedContent(item)
-                      }
-                    >
-
-                      <Play fill="white"/>
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-      )}
-
-      {/* CONTEUDO */}
-
-      {selectedContent &&
-      !adminOpen && (
-
-        <div className="seriesPage">
-
-          <div className="seriesBanner">
-
-            <img
-              src={
-                selectedContent.banner
+                })
               }
-              alt=""
+
+            >
+
+              <option value="series">
+                Série
+              </option>
+
+              <option value="movie">
+                Filme
+              </option>
+
+            </select>
+
+            <input
+              placeholder="Título"
+
+              value={newContent.title}
+
+              onChange={(e)=>
+                setNewContent({
+
+                  ...newContent,
+
+                  title:e.target.value
+
+                })
+              }
             />
 
-            <div className="seriesOverlay"/>
+            <textarea
+              placeholder="Descrição"
 
-            <div className="seriesInfo">
+              value={
+                newContent.description
+              }
 
-              <h1>
-                {
-                  selectedContent.title
-                }
-              </h1>
+              onChange={(e)=>
+                setNewContent({
 
-              <p>
-                {
-                  selectedContent
-                  .description
-                }
-              </p>
+                  ...newContent,
 
-            </div>
+                  description:
+                  e.target.value
+
+                })
+              }
+            />
+
+            <input
+              placeholder="Capa"
+
+              value={newContent.cover}
+
+              onChange={(e)=>
+                setNewContent({
+
+                  ...newContent,
+
+                  cover:e.target.value
+
+                })
+              }
+            />
+
+            <input
+              placeholder="Banner"
+
+              value={newContent.banner}
+
+              onChange={(e)=>
+                setNewContent({
+
+                  ...newContent,
+
+                  banner:e.target.value
+
+                })
+              }
+            />
+
+            <button
+              className="watchEpisode"
+
+              onClick={addContent}
+            >
+
+              <Plus size={16}/>
+              Adicionar
+
+            </button>
 
           </div>
-
-          {/* SERIES */}
-
-          {selectedContent.type ===
-          "series" && (
-
-            <>
-
-              <div className="seasonTabs">
-
-                {selectedContent
-                .seasons.map(
-                  (season,index)=>(
-
-                  <button
-
-                    key={index}
-
-                    className={
-                      selectedSeason ===
-                      index
-                      ? "seasonTab active"
-                      : "seasonTab"
-                    }
-
-                    onClick={()=>
-                      setSelectedSeason(index)
-                    }
-                  >
-
-                    Temporada {
-                      season.number
-                    }
-
-                  </button>
-
-                ))}
-
-              </div>
-
-              <div className="episodesGrid">
-
-                {selectedContent
-                .seasons[
-                  selectedSeason
-                ]
-                ?.episodes
-                ?.map((ep,epIndex)=>(
-
-                  <div
-                    className="episodeCard"
-                    key={epIndex}
-                  >
-
-                    <div className="episodeThumb">
-
-                      <img
-                        src={ep.thumb}
-                        alt=""
-                      />
-
-                    </div>
-
-                    <div className="episodeContent">
-
-                      <h3>
-                        {ep.title}
-                      </h3>
-
-                      <p>
-                        {ep.description}
-                      </p>
-
-                      <button
-                        className="watchEpisode"
-
-                        onClick={()=>{
-
-                          setCurrentVideo(
-                            ep.video
-                          )
-
-                          setPlayerOpen(true)
-
-                        }}
-                      >
-
-                        Assistir
-
-                      </button>
-
-                    </div>
-
-                  </div>
-
-                ))}
-
-              </div>
-
-            </>
-
-          )}
 
         </div>
 
