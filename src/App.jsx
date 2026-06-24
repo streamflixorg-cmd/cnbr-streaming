@@ -105,7 +105,7 @@ export default function App(){
   }
 
   /* =========================
-     LOAD FIREBASE
+     FIREBASE LOAD
   ========================= */
 
   useEffect(()=>{
@@ -131,29 +131,28 @@ export default function App(){
 
           if(firebaseData.contents){
 
-            let loadedContents =
+            let loaded =
             firebaseData.contents
 
             if(
               !Array.isArray(
-                loadedContents
+                loaded
               )
             ){
 
-              loadedContents =
+              loaded =
               Object.values(
-                loadedContents
+                loaded
               )
 
             }
 
-            loadedContents =
-            loadedContents.map(item=>({
+            loaded =
+            loaded.map(item=>({
 
               id:
               item.id ||
-              Date.now() +
-              Math.random(),
+              Date.now(),
 
               type:
               item.type ||
@@ -161,7 +160,7 @@ export default function App(){
 
               title:
               item.title ||
-              "Sem título",
+              "",
 
               description:
               item.description ||
@@ -169,21 +168,18 @@ export default function App(){
 
               cover:
               item.cover ||
-              "https://placehold.co/600x900",
+              "",
 
               banner:
               item.banner ||
-              item.cover ||
-              "https://placehold.co/1200x500",
+              "",
 
               seasons:
               item.seasons || []
 
             }))
 
-            setContents([
-              ...loadedContents
-            ])
+            setContents(loaded)
 
           }
 
@@ -191,10 +187,7 @@ export default function App(){
 
       }catch(err){
 
-        console.log(
-          "ERRO FIREBASE:",
-          err
-        )
+        console.log(err)
 
       }
 
@@ -205,7 +198,7 @@ export default function App(){
   },[])
 
   /* =========================
-     SAVE FIREBASE
+     FIREBASE SAVE
   ========================= */
 
   async function saveData(data){
@@ -261,13 +254,6 @@ export default function App(){
 
   function addContent(){
 
-    if(!newContent.title){
-
-      alert("Digite um título")
-      return
-
-    }
-
     const updated = [
 
       ...contents,
@@ -308,34 +294,6 @@ export default function App(){
 
     saveData(updated)
 
-    setNewContent({
-
-      type:"series",
-
-      title:"",
-      description:"",
-      cover:"",
-      banner:""
-
-    })
-
-  }
-
-  /* =========================
-     DELETE CONTENT
-  ========================= */
-
-  function deleteContent(id){
-
-    const updated =
-    contents.filter(
-      item => item.id !== id
-    )
-
-    setContents(updated)
-
-    saveData(updated)
-
   }
 
   /* =========================
@@ -349,7 +307,7 @@ export default function App(){
 
     const content =
     updated.find(
-      item => item.id === contentId
+      item=>item.id===contentId
     )
 
     content.seasons.push({
@@ -368,7 +326,7 @@ export default function App(){
   }
 
   /* =========================
-     ADD EPISODE
+     ADD EP
   ========================= */
 
   function addEpisode(
@@ -381,7 +339,7 @@ export default function App(){
 
     const content =
     updated.find(
-      item => item.id === contentId
+      item=>item.id===contentId
     )
 
     content
@@ -399,12 +357,30 @@ export default function App(){
 
       title:"Novo episódio",
 
-      description:"Descrição",
+      description:"",
 
       thumb:"",
+
       video:""
 
     })
+
+    setContents(updated)
+
+    saveData(updated)
+
+  }
+
+  /* =========================
+     DELETE CONTENT
+  ========================= */
+
+  function deleteContent(id){
+
+    const updated =
+    contents.filter(
+      item=>item.id!==id
+    )
 
     setContents(updated)
 
@@ -424,8 +400,11 @@ export default function App(){
           className="logo"
 
           onClick={()=>{
+
             setSelectedContent(null)
+
             setAdminOpen(false)
+
           }}
         >
 
@@ -449,8 +428,11 @@ export default function App(){
 
             <Home
               onClick={()=>{
+
                 setSelectedContent(null)
+
                 setAdminOpen(false)
+
               }}
             />
 
@@ -604,7 +586,6 @@ export default function App(){
 
                 })
               }
-
             >
 
               <option value="series">
@@ -698,7 +679,10 @@ export default function App(){
           </div>
 
           {contents.map(
-            (content,contentIndex)=>(
+            (
+              content,
+              contentIndex
+            )=>(
 
             <div
               className="contentEditor"
@@ -708,8 +692,6 @@ export default function App(){
               <input
 
                 value={content.title}
-
-                placeholder="Título"
 
                 onChange={(e)=>{
 
@@ -735,8 +717,6 @@ export default function App(){
                   content.description
                 }
 
-                placeholder="Descrição"
-
                 onChange={(e)=>{
 
                   const updated =
@@ -759,8 +739,6 @@ export default function App(){
 
                 value={content.cover}
 
-                placeholder="Capa"
-
                 onChange={(e)=>{
 
                   const updated =
@@ -782,8 +760,6 @@ export default function App(){
               <input
 
                 value={content.banner}
-
-                placeholder="Banner"
 
                 onChange={(e)=>{
 
@@ -818,9 +794,400 @@ export default function App(){
 
               </button>
 
+              {/* SERIES */}
+
+              {content.type ===
+              "series" && (
+
+                <>
+
+                  {content.seasons.map(
+                    (
+                      season,
+                      seasonIndex
+                    )=>(
+
+                    <div
+                      key={seasonIndex}
+                    >
+
+                      <h3>
+
+                        Temporada {
+                          season.number
+                        }
+
+                      </h3>
+
+                      {season.episodes.map(
+                        (
+                          ep,
+                          epIndex
+                        )=>(
+
+                        <div
+                          key={epIndex}
+                          className="episodeAdmin"
+                        >
+
+                          <input
+
+                            value={ep.title}
+
+                            placeholder="Título"
+
+                            onChange={(e)=>{
+
+                              const updated =
+                              [...contents]
+
+                              updated[
+                                contentIndex
+                              ]
+                              .seasons[
+                                seasonIndex
+                              ]
+                              .episodes[
+                                epIndex
+                              ]
+                              .title =
+                              e.target.value
+
+                              setContents(updated)
+
+                              saveData(updated)
+
+                            }}
+                          />
+
+                          <textarea
+
+                            value={
+                              ep.description
+                            }
+
+                            placeholder="Descrição"
+
+                            onChange={(e)=>{
+
+                              const updated =
+                              [...contents]
+
+                              updated[
+                                contentIndex
+                              ]
+                              .seasons[
+                                seasonIndex
+                              ]
+                              .episodes[
+                                epIndex
+                              ]
+                              .description =
+                              e.target.value
+
+                              setContents(updated)
+
+                              saveData(updated)
+
+                            }}
+                          />
+
+                          <input
+
+                            value={ep.thumb}
+
+                            placeholder="Thumb"
+
+                            onChange={(e)=>{
+
+                              const updated =
+                              [...contents]
+
+                              updated[
+                                contentIndex
+                              ]
+                              .seasons[
+                                seasonIndex
+                              ]
+                              .episodes[
+                                epIndex
+                              ]
+                              .thumb =
+                              e.target.value
+
+                              setContents(updated)
+
+                              saveData(updated)
+
+                            }}
+                          />
+
+                          <input
+
+                            value={ep.video}
+
+                            placeholder="Vídeo"
+
+                            onChange={(e)=>{
+
+                              const updated =
+                              [...contents]
+
+                              updated[
+                                contentIndex
+                              ]
+                              .seasons[
+                                seasonIndex
+                              ]
+                              .episodes[
+                                epIndex
+                              ]
+                              .video =
+                              formatDriveLink(
+                                e.target.value
+                              )
+
+                              setContents(updated)
+
+                              saveData(updated)
+
+                            }}
+                          />
+
+                        </div>
+
+                      ))}
+
+                      <button
+                        className="watchEpisode"
+
+                        onClick={()=>{
+
+                          addEpisode(
+                            content.id,
+                            seasonIndex
+                          )
+
+                        }}
+                      >
+
+                        <Plus size={16}/>
+                        Episódio
+
+                      </button>
+
+                    </div>
+
+                  ))}
+
+                  <button
+                    className="watchEpisode"
+
+                    onClick={()=>
+                      addSeason(
+                        content.id
+                      )
+                    }
+                  >
+
+                    <Plus size={16}/>
+                    Temporada
+
+                  </button>
+
+                </>
+
+              )}
+
             </div>
 
           ))}
+
+        </div>
+
+      )}
+
+      {/* HOME */}
+
+      {!selectedContent &&
+      !adminOpen && (
+
+        <div className="home">
+
+          <div className="cardsGrid">
+
+            {contents.map(item=>(
+
+              <div
+                className="movieCard"
+                key={item.id}
+              >
+
+                <div className="moviePoster">
+
+                  <img
+                    src={item.cover}
+                    alt=""
+                  />
+
+                  <div className="movieLayer">
+
+                    <button
+
+                      onClick={()=>{
+                        setSelectedContent(item)
+                      }}
+                    >
+
+                      <Play fill="white"/>
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* CONTENT PAGE */}
+
+      {selectedContent &&
+      !adminOpen && (
+
+        <div className="seriesPage">
+
+          <div className="seriesBanner">
+
+            <img
+              src={
+                selectedContent.banner
+              }
+              alt=""
+            />
+
+            <div className="seriesOverlay"/>
+
+            <div className="seriesInfo">
+
+              <h1>
+                {
+                  selectedContent.title
+                }
+              </h1>
+
+              <p>
+                {
+                  selectedContent
+                  .description
+                }
+              </p>
+
+            </div>
+
+          </div>
+
+          {selectedContent.type ===
+          "series" && (
+
+            <>
+
+              <div className="seasonTabs">
+
+                {selectedContent
+                .seasons.map(
+                  (
+                    season,
+                    index
+                  )=>(
+
+                  <button
+
+                    key={index}
+
+                    className={
+                      selectedSeason ===
+                      index
+                      ? "seasonTab active"
+                      : "seasonTab"
+                    }
+
+                    onClick={()=>
+                      setSelectedSeason(index)
+                    }
+                  >
+
+                    Temporada {
+                      season.number
+                    }
+
+                  </button>
+
+                ))}
+
+              </div>
+
+              <div className="episodesGrid">
+
+                {selectedContent
+                .seasons[
+                  selectedSeason
+                ]
+                ?.episodes
+                ?.map((ep,epIndex)=>(
+
+                  <div
+                    className="episodeCard"
+                    key={epIndex}
+                  >
+
+                    <img
+                      src={ep.thumb}
+                      alt=""
+                    />
+
+                    <h3>
+                      {ep.title}
+                    </h3>
+
+                    <p>
+                      {ep.description}
+                    </p>
+
+                    <button
+                      className="watchEpisode"
+
+                      onClick={()=>{
+
+                        setCurrentVideo(
+                          ep.video
+                        )
+
+                        setPlayerOpen(true)
+
+                      }}
+                    >
+
+                      Assistir
+
+                    </button>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            </>
+
+          )}
 
         </div>
 
