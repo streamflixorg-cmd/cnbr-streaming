@@ -8,7 +8,7 @@ import {
 import {
   Search,
   Home,
- Menu,
+  Menu,
   Play,
   Shield,
   X,
@@ -258,18 +258,6 @@ export default function App(){
     seasonIndex
   ){
 
-    const title =
-    prompt("Título")
-
-    const description =
-    prompt("Descrição")
-
-    const thumb =
-    prompt("Thumb")
-
-    const video =
-    prompt("Vídeo")
-
     const updated =
     [...contents]
 
@@ -291,10 +279,12 @@ export default function App(){
       ]
       .episodes.length + 1,
 
-      title,
-      description,
-      thumb,
-      video
+      title:"Novo episódio",
+
+      description:"Descrição",
+
+      thumb:"",
+      video:""
 
     })
 
@@ -307,6 +297,8 @@ export default function App(){
   return(
 
     <div className="app">
+
+      {/* NAVBAR */}
 
       <div className="navbar">
 
@@ -380,6 +372,8 @@ export default function App(){
 
       </div>
 
+      {/* PLAYER */}
+
       {playerOpen && (
 
         <div className="playerModal">
@@ -416,6 +410,8 @@ export default function App(){
         </div>
 
       )}
+
+      {/* LOGIN */}
 
       {adminOpen &&
       !logged && (
@@ -464,10 +460,14 @@ export default function App(){
 
       )}
 
+      {/* ADMIN */}
+
       {adminOpen &&
       logged && (
 
         <div className="adminPanel">
+
+          {/* NOVO CONTEUDO */}
 
           <div className="contentEditor">
 
@@ -581,35 +581,141 @@ export default function App(){
 
           </div>
 
-          {contents.map(content=>(
+          {/* LISTA */}
+
+          {contents.map(
+            (content,contentIndex)=>(
 
             <div
               className="contentEditor"
               key={content.id}
             >
 
-              <div className="adminTop">
+              <div
+                style={{
+                  display:"flex",
+                  flexDirection:"column",
+                  gap:"12px",
+                  marginBottom:"20px"
+                }}
+              >
 
-                <h2>
-                  {content.title}
-                </h2>
+                <input
 
-                <button
-                  className="deleteBtn"
+                  value={content.title}
 
-                  onClick={()=>
-                    deleteContent(
-                      content.id
-                    )
+                  placeholder="Título"
+
+                  onChange={(e)=>{
+
+                    const updated =
+                    [...contents]
+
+                    updated[
+                      contentIndex
+                    ]
+                    .title =
+                    e.target.value
+
+                    setContents(updated)
+
+                    saveData(updated)
+
+                  }}
+                />
+
+                <textarea
+
+                  value={
+                    content.description
                   }
-                >
 
-                  <Trash2 size={16}/>
-                  Excluir
+                  placeholder="Descrição"
 
-                </button>
+                  onChange={(e)=>{
+
+                    const updated =
+                    [...contents]
+
+                    updated[
+                      contentIndex
+                    ]
+                    .description =
+                    e.target.value
+
+                    setContents(updated)
+
+                    saveData(updated)
+
+                  }}
+                />
+
+                <input
+
+                  value={content.cover}
+
+                  placeholder="Capa"
+
+                  onChange={(e)=>{
+
+                    const updated =
+                    [...contents]
+
+                    updated[
+                      contentIndex
+                    ]
+                    .cover =
+                    e.target.value
+
+                    setContents(updated)
+
+                    saveData(updated)
+
+                  }}
+                />
+
+                <input
+
+                  value={content.banner}
+
+                  placeholder="Banner"
+
+                  onChange={(e)=>{
+
+                    const updated =
+                    [...contents]
+
+                    updated[
+                      contentIndex
+                    ]
+                    .banner =
+                    e.target.value
+
+                    setContents(updated)
+
+                    saveData(updated)
+
+                  }}
+                />
 
               </div>
+
+              <button
+                className="deleteBtn"
+
+                onClick={()=>
+                  deleteContent(
+                    content.id
+                  )
+                }
+              >
+
+                <Trash2 size={16}/>
+                Excluir
+
+              </button>
+
+              {/* SERIES */}
 
               {content.type ===
               "series" && (
@@ -617,13 +723,18 @@ export default function App(){
                 <>
 
                   {content.seasons.map(
-                    (season,seasonIndex)=>(
+                    (
+                      season,
+                      seasonIndex
+                    )=>(
 
                     <div
                       key={seasonIndex}
                     >
 
-                      <div className="seasonTop">
+                      <div
+                        className="seasonTop"
+                      >
 
                         <h3>
                           Temporada {
@@ -652,18 +763,179 @@ export default function App(){
                       </div>
 
                       {season.episodes.map(
-                        (ep,epIndex)=>(
+                        (
+                          ep,
+                          epIndex
+                        )=>(
 
                         <div
                           className="episodeAdmin"
                           key={epIndex}
                         >
 
-                          <span>
-                            {ep.number}.
-                            {" "}
-                            {ep.title}
-                          </span>
+                          <div
+                            style={{
+                              display:"flex",
+                              flexDirection:"column",
+                              gap:"12px"
+                            }}
+                          >
+
+                            <input
+
+                              value={ep.title}
+
+                              placeholder="Título"
+
+                              onChange={(e)=>{
+
+                                const updated =
+                                [...contents]
+
+                                updated[
+                                  contentIndex
+                                ]
+                                .seasons[
+                                  seasonIndex
+                                ]
+                                .episodes[
+                                  epIndex
+                                ]
+                                .title =
+                                e.target.value
+
+                                setContents(updated)
+
+                                saveData(updated)
+
+                              }}
+                            />
+
+                            <textarea
+
+                              value={
+                                ep.description
+                              }
+
+                              placeholder="Descrição"
+
+                              onChange={(e)=>{
+
+                                const updated =
+                                [...contents]
+
+                                updated[
+                                  contentIndex
+                                ]
+                                .seasons[
+                                  seasonIndex
+                                ]
+                                .episodes[
+                                  epIndex
+                                ]
+                                .description =
+                                e.target.value
+
+                                setContents(updated)
+
+                                saveData(updated)
+
+                              }}
+                            />
+
+                            <input
+
+                              value={ep.thumb}
+
+                              placeholder="Thumb"
+
+                              onChange={(e)=>{
+
+                                const updated =
+                                [...contents]
+
+                                updated[
+                                  contentIndex
+                                ]
+                                .seasons[
+                                  seasonIndex
+                                ]
+                                .episodes[
+                                  epIndex
+                                ]
+                                .thumb =
+                                e.target.value
+
+                                setContents(updated)
+
+                                saveData(updated)
+
+                              }}
+                            />
+
+                            <input
+
+                              value={ep.video}
+
+                              placeholder="Vídeo"
+
+                              onChange={(e)=>{
+
+                                const updated =
+                                [...contents]
+
+                                updated[
+                                  contentIndex
+                                ]
+                                .seasons[
+                                  seasonIndex
+                                ]
+                                .episodes[
+                                  epIndex
+                                ]
+                                .video =
+                                e.target.value
+
+                                setContents(updated)
+
+                                saveData(updated)
+
+                              }}
+                            />
+
+                            <button
+
+                              className="deleteBtn"
+
+                              onClick={()=>{
+
+                                const updated =
+                                [...contents]
+
+                                updated[
+                                  contentIndex
+                                ]
+                                .seasons[
+                                  seasonIndex
+                                ]
+                                .episodes.splice(
+                                  epIndex,
+                                  1
+                                )
+
+                                setContents(updated)
+
+                                saveData(updated)
+
+                              }}
+
+                            >
+
+                              Excluir Episódio
+
+                            </button>
+
+                          </div>
 
                         </div>
 
@@ -699,6 +971,8 @@ export default function App(){
         </div>
 
       )}
+
+      {/* HOME */}
 
       {!selectedContent &&
       !adminOpen && (
@@ -748,6 +1022,8 @@ export default function App(){
 
       )}
 
+      {/* CONTEUDO */}
+
       {selectedContent &&
       !adminOpen && (
 
@@ -795,6 +1071,7 @@ export default function App(){
                   (season,index)=>(
 
                   <button
+
                     key={index}
 
                     className={
@@ -805,9 +1082,7 @@ export default function App(){
                     }
 
                     onClick={()=>
-                      setSelectedSeason(
-                        index
-                      )
+                      setSelectedSeason(index)
                     }
                   >
 
