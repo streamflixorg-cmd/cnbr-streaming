@@ -1,62 +1,17 @@
 import "./App.css"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 import {
   Search,
- Heart,
   Home,
   Menu,
   Play,
   Shield,
-  X,
-  Plus,
-  Trash2
+  X
 } from "lucide-react"
 
-import { db } from "./firebase"
-
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  updateDoc
-} from "firebase/firestore"
-
 export default function App(){
-
-  const [contents,setContents] =
-  useState([])
-
-  useEffect(()=>{
-
-    const unsubscribe =
-    onSnapshot(
-
-      collection(db,"contents"),
-
-      (snapshot)=>{
-
-        const data =
-        snapshot.docs.map(doc=>({
-
-          firebaseId:doc.id,
-
-          ...doc.data()
-
-        }))
-
-        setContents(data)
-
-      }
-
-    )
-
-    return ()=>unsubscribe()
-
-  },[])
 
   const [menuOpen,setMenuOpen] =
   useState(false)
@@ -73,27 +28,84 @@ export default function App(){
   const [password,setPassword] =
   useState("")
 
-  const [selectedContent,setSelectedContent] =
-  useState(null)
-
-  const [selectedSeason,setSelectedSeason] =
-  useState(0)
-
   const [playerOpen,setPlayerOpen] =
   useState(false)
 
   const [currentVideo,setCurrentVideo] =
   useState("")
 
-  const [newSeries,setNewSeries] =
-  useState({
+  const [selectedSeason,setSelectedSeason] =
+  useState(0)
 
-    title:"",
-    description:"",
-    cover:"",
-    banner:""
+  const [contents] =
+  useState([
 
-  })
+    {
+      id:1,
+
+      type:"series",
+
+      title:"Arcane",
+
+      description:
+      "Duas irmãs entram em lados opostos em uma guerra entre tecnologia e magia.",
+
+      cover:
+      "https://images.alphacoders.com/118/1181423.jpg",
+
+      banner:
+      "https://wallpapercave.com/wp/wp9429848.jpg",
+
+      seasons:[
+
+        {
+          number:1,
+
+          episodes:[
+
+            {
+              number:1,
+
+              title:"Bem-vindo",
+
+              description:
+              "O começo da história.",
+
+              thumb:
+              "https://images6.alphacoders.com/118/1181426.jpg",
+
+              video:
+              "https://www.youtube.com/embed/fXmAurh012s"
+            }
+
+          ]
+        }
+
+      ]
+    },
+
+    {
+      id:2,
+
+      type:"movie",
+
+      title:"Interestelar",
+
+      description:
+      "Uma viagem espacial para salvar a humanidade.",
+
+      cover:
+      "https://wallpapercave.com/wp/wp1817978.jpg",
+
+      banner:
+      "https://wallpapercave.com/wp/wp1817967.jpg"
+    }
+
+  ])
+
+  const [selectedContent,
+  setSelectedContent] =
+  useState(null)
 
   function loginAdmin(){
 
@@ -112,298 +124,11 @@ export default function App(){
 
   }
 
-  function formatVideo(url){
-
-    if(!url) return ""
-
-    if(
-      url.includes("youtube.com/watch?v=")
-    ){
-
-      const id =
-      url.split("v=")[1]
-
-      return `https://www.youtube.com/embed/${id}`
-
-    }
-
-    if(
-      url.includes("youtu.be/")
-    ){
-
-      const id =
-      url.split("youtu.be/")[1]
-
-      return `https://www.youtube.com/embed/${id}`
-
-    }
-
-    if(
-      url.includes("drive.google.com")
-    ){
-
-      const match =
-      url.match(/\/d\/(.*?)\//)
-
-      if(match){
-
-        return `https://drive.google.com/file/d/${match[1]}/preview`
-
-      }
-
-    }
-
-    return url
-
-  }
-
-  async function addSeries(){
-
-    if(!newSeries.title){
-
-      alert("Digite um título")
-      return
-
-    }
-
-    await addDoc(
-
-      collection(db,"contents"),
-
-      {
-
-        id:Date.now(),
-
-        type:"series",
-
-        title:newSeries.title,
-
-        description:
-        newSeries.description,
-
-        cover:newSeries.cover,
-
-        banner:newSeries.banner,
-
-        seasons:[
-          {
-            number:1,
-            episodes:[]
-          }
-        ]
-
-      }
-
-    )
-
-    setNewSeries({
-
-      title:"",
-      description:"",
-      cover:"",
-      banner:""
-
-    })
-
-  }
-
-  async function saveSeries(content){
-
-    await updateDoc(
-
-      doc(
-        db,
-        "contents",
-        content.firebaseId
-      ),
-
-      {
-
-        title:content.title,
-
-        description:
-        content.description,
-
-        cover:content.cover,
-
-        banner:content.banner,
-
-        seasons:content.seasons
-
-      }
-
-    )
-
-  }
-
-  async function deleteSeries(content){
-
-    await deleteDoc(
-
-      doc(
-        db,
-        "contents",
-        content.firebaseId
-      )
-
-    )
-
-  }
-
-  async function addSeason(content){
-
-    const updatedSeasons =
-    [
-      ...content.seasons,
-
-      {
-        number:
-        content.seasons.length + 1,
-
-        episodes:[]
-      }
-    ]
-
-    await updateDoc(
-
-      doc(
-        db,
-        "contents",
-        content.firebaseId
-      ),
-
-      {
-        seasons:updatedSeasons
-      }
-
-    )
-
-  }
-
-  async function addEpisode(
-    content,
-    seasonIndex
-  ){
-
-    const updatedSeasons =
-    [...content.seasons]
-
-    updatedSeasons[
-      seasonIndex
-    ]
-    .episodes.push({
-
-      number:
-      updatedSeasons[
-        seasonIndex
-      ]
-      .episodes.length + 1,
-
-      title:"Novo episódio",
-
-      description:"Descrição",
-
-      thumb:"",
-
-      video:""
-
-    })
-
-    await updateDoc(
-
-      doc(
-        db,
-        "contents",
-        content.firebaseId
-      ),
-
-      {
-        seasons:updatedSeasons
-      }
-
-    )
-
-  }
-
-  function updateEpisode(
-    contentIndex,
-    seasonIndex,
-    epIndex,
-    field,
-    value
-  ){
-
-    const updated =
-    [...contents]
-
-    updated[
-      contentIndex
-    ]
-    .seasons[
-      seasonIndex
-    ]
-    .episodes[
-      epIndex
-    ][field] = value
-
-    setContents(updated)
-
-  }
-
-  async function saveEpisodes(content){
-
-    await updateDoc(
-
-      doc(
-        db,
-        "contents",
-        content.firebaseId
-      ),
-
-      {
-        seasons:content.seasons
-      }
-
-    )
-
-  }
-
-  async function deleteEpisode(
-    content,
-    seasonIndex,
-    epIndex
-  ){
-
-    const updatedSeasons =
-    [...content.seasons]
-
-    updatedSeasons[
-      seasonIndex
-    ]
-    .episodes.splice(
-      epIndex,
-      1
-    )
-
-    await updateDoc(
-
-      doc(
-        db,
-        "contents",
-        content.firebaseId
-      ),
-
-      {
-        seasons:updatedSeasons
-      }
-
-    )
-
-  }
-
   return(
 
     <div className="app">
+
+      {/* NAVBAR */}
 
       <div className="navbar">
 
@@ -441,8 +166,6 @@ export default function App(){
               }}
             />
 
-            <Heart/>
-
             <Menu
               onClick={()=>
                 setMenuOpen(!menuOpen)
@@ -478,6 +201,8 @@ export default function App(){
         )}
 
       </div>
+
+      {/* PLAYER */}
 
       {playerOpen && (
 
@@ -516,6 +241,8 @@ export default function App(){
 
       )}
 
+      {/* LOGIN */}
+
       {adminOpen &&
       !logged && (
 
@@ -552,7 +279,9 @@ export default function App(){
             <button
               onClick={loginAdmin}
             >
+
               Entrar
+
             </button>
 
           </div>
@@ -560,6 +289,8 @@ export default function App(){
         </div>
 
       )}
+
+      {/* ADMIN */}
 
       {adminOpen &&
       logged && (
@@ -569,420 +300,20 @@ export default function App(){
           <div className="contentEditor">
 
             <h2>
-              Nova Série
+              Painel Administrativo
             </h2>
 
-            <input
-              placeholder="Título"
-
-              value={newSeries.title}
-
-              onChange={(e)=>
-                setNewSeries({
-
-                  ...newSeries,
-
-                  title:e.target.value
-
-                })
-              }
-            />
-
-            <textarea
-              placeholder="Descrição"
-
-              value={
-                newSeries.description
-              }
-
-              onChange={(e)=>
-                setNewSeries({
-
-                  ...newSeries,
-
-                  description:
-                  e.target.value
-
-                })
-              }
-            />
-
-            <input
-              placeholder="Capa"
-
-              value={newSeries.cover}
-
-              onChange={(e)=>
-                setNewSeries({
-
-                  ...newSeries,
-
-                  cover:e.target.value
-
-                })
-              }
-            />
-
-            <input
-              placeholder="Banner"
-
-              value={newSeries.banner}
-
-              onChange={(e)=>
-                setNewSeries({
-
-                  ...newSeries,
-
-                  banner:e.target.value
-
-                })
-              }
-            />
-
-            <button
-              className="watchEpisode"
-
-              onClick={addSeries}
-            >
-
-              <Plus size={16}/>
-              Adicionar Série
-
-            </button>
+            <p>
+              Sistema funcionando.
+            </p>
 
           </div>
-
-          {contents.map(
-            (content,contentIndex)=>(
-
-            <div
-              className="contentEditor"
-
-              key={content.id}
-            >
-
-              <input
-
-                value={content.title}
-
-                onChange={(e)=>{
-
-                  const updated =
-                  [...contents]
-
-                  updated[
-                    contentIndex
-                  ]
-                  .title =
-                  e.target.value
-
-                  setContents(updated)
-
-                }}
-              />
-
-              <textarea
-
-                value={
-                  content.description
-                }
-
-                onChange={(e)=>{
-
-                  const updated =
-                  [...contents]
-
-                  updated[
-                    contentIndex
-                  ]
-                  .description =
-                  e.target.value
-
-                  setContents(updated)
-
-                }}
-              />
-
-              <input
-
-                value={content.cover}
-
-                onChange={(e)=>{
-
-                  const updated =
-                  [...contents]
-
-                  updated[
-                    contentIndex
-                  ]
-                  .cover =
-                  e.target.value
-
-                  setContents(updated)
-
-                }}
-              />
-
-              <input
-
-                value={content.banner}
-
-                onChange={(e)=>{
-
-                  const updated =
-                  [...contents]
-
-                  updated[
-                    contentIndex
-                  ]
-                  .banner =
-                  e.target.value
-
-                  setContents(updated)
-
-                }}
-              />
-
-              <div
-                style={{
-                  display:"flex",
-                  gap:"10px",
-                  marginBottom:"20px"
-                }}
-              >
-
-                <button
-                  className="watchEpisode"
-
-                  onClick={()=>
-                    saveSeries(content)
-                  }
-                >
-
-                  Salvar
-
-                </button>
-
-                <button
-                  className="watchEpisode"
-
-                  style={{
-                    background:"#ff3d3d"
-                  }}
-
-                  onClick={()=>
-                    deleteSeries(content)
-                  }
-                >
-
-                  <Trash2 size={16}/>
-                  Excluir
-
-                </button>
-
-              </div>
-
-              {content.seasons.map(
-                (season,seasonIndex)=>(
-
-                <div key={seasonIndex}>
-
-                  <h3>
-                    Temporada {
-                      season.number
-                    }
-                  </h3>
-
-                  <button
-                    className="watchEpisode"
-
-                    onClick={()=>{
-
-                      addEpisode(
-                        content,
-                        seasonIndex
-                      )
-
-                    }}
-                  >
-
-                    + Episódio
-
-                  </button>
-
-                  {season.episodes.map(
-                    (ep,epIndex)=>(
-
-                    <div
-                      className="episodeEditor"
-
-                      key={epIndex}
-                    >
-
-                      <input
-
-                        value={ep.title}
-
-                        onChange={(e)=>
-
-                          updateEpisode(
-
-                            contentIndex,
-                            seasonIndex,
-                            epIndex,
-
-                            "title",
-
-                            e.target.value
-
-                          )
-
-                        }
-                      />
-
-                      <textarea
-
-                        value={
-                          ep.description
-                        }
-
-                        onChange={(e)=>
-
-                          updateEpisode(
-
-                            contentIndex,
-                            seasonIndex,
-                            epIndex,
-
-                            "description",
-
-                            e.target.value
-
-                          )
-
-                        }
-                      />
-
-                      <input
-
-                        placeholder="Thumb"
-
-                        value={ep.thumb}
-
-                        onChange={(e)=>
-
-                          updateEpisode(
-
-                            contentIndex,
-                            seasonIndex,
-                            epIndex,
-
-                            "thumb",
-
-                            e.target.value
-
-                          )
-
-                        }
-                      />
-
-                      <input
-
-                        placeholder="Vídeo"
-
-                        value={ep.video}
-
-                        onChange={(e)=>
-
-                          updateEpisode(
-
-                            contentIndex,
-                            seasonIndex,
-                            epIndex,
-
-                            "video",
-
-                            formatVideo(
-                              e.target.value
-                            )
-
-                          )
-
-                        }
-                      />
-
-                      <div
-                        style={{
-                          display:"flex",
-                          gap:"10px"
-                        }}
-                      >
-
-                        <button
-                          className="watchEpisode"
-
-                          onClick={()=>
-                            saveEpisodes(
-                              content
-                            )
-                          }
-                        >
-
-                          Salvar Episódio
-
-                        </button>
-
-                        <button
-                          className="watchEpisode"
-
-                          style={{
-                            background:"#ff3d3d"
-                          }}
-
-                          onClick={()=>{
-
-                            deleteEpisode(
-                              content,
-                              seasonIndex,
-                              epIndex
-                            )
-
-                          }}
-                        >
-
-                          Excluir
-
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  ))}
-
-                </div>
-
-              ))}
-
-              <button
-                className="watchEpisode"
-
-                onClick={()=>
-                  addSeason(content)
-                }
-              >
-
-                Nova Temporada
-
-              </button>
-
-            </div>
-
-          ))}
 
         </div>
 
       )}
+
+      {/* HOME */}
 
       {!selectedContent &&
       !adminOpen && (
@@ -1008,6 +339,7 @@ export default function App(){
                   <div className="movieLayer">
 
                     <button
+
                       onClick={()=>
                         setSelectedContent(item)
                       }
@@ -1030,6 +362,8 @@ export default function App(){
         </div>
 
       )}
+
+      {/* CONTEUDO */}
 
       {selectedContent &&
       !adminOpen && (
@@ -1066,96 +400,107 @@ export default function App(){
 
           </div>
 
-          <div className="seasonTabs">
+          {/* SERIES */}
 
-            {selectedContent
-            .seasons.map(
-              (season,index)=>(
+          {selectedContent.type ===
+          "series" && (
 
-              <button
+            <>
 
-                key={index}
+              <div className="seasonTabs">
 
-                className={
-                  selectedSeason ===
-                  index
-                  ? "seasonTab active"
-                  : "seasonTab"
-                }
-
-                onClick={()=>
-                  setSelectedSeason(index)
-                }
-              >
-
-                Temporada {
-                  season.number
-                }
-
-              </button>
-
-            ))}
-
-          </div>
-
-          <div className="episodesGrid">
-
-            {selectedContent
-            .seasons[
-              selectedSeason
-            ]
-            ?.episodes
-            ?.map((ep,epIndex)=>(
-
-              <div
-                className="episodeCard"
-                key={epIndex}
-              >
-
-                <div className="episodeThumb">
-
-                  <img
-                    src={ep.thumb}
-                    alt=""
-                  />
-
-                </div>
-
-                <div className="episodeContent">
-
-                  <h3>
-                    {ep.title}
-                  </h3>
-
-                  <p>
-                    {ep.description}
-                  </p>
+                {selectedContent
+                .seasons.map(
+                  (season,index)=>(
 
                   <button
-                    className="watchEpisode"
 
-                    onClick={()=>{
+                    key={index}
 
-                      setCurrentVideo(
-                        ep.video
-                      )
+                    className={
+                      selectedSeason ===
+                      index
+                      ? "seasonTab active"
+                      : "seasonTab"
+                    }
 
-                      setPlayerOpen(true)
-
-                    }}
+                    onClick={()=>
+                      setSelectedSeason(index)
+                    }
                   >
 
-                    Assistir
+                    Temporada {
+                      season.number
+                    }
 
                   </button>
 
-                </div>
+                ))}
 
               </div>
 
-            ))}
+              <div className="episodesGrid">
 
-          </div>
+                {selectedContent
+                .seasons[
+                  selectedSeason
+                ]
+                ?.episodes
+                ?.map((ep,epIndex)=>(
+
+                  <div
+                    className="episodeCard"
+                    key={epIndex}
+                  >
+
+                    <div className="episodeThumb">
+
+                      <img
+                        src={ep.thumb}
+                        alt=""
+                      />
+
+                    </div>
+
+                    <div className="episodeContent">
+
+                      <h3>
+                        {ep.title}
+                      </h3>
+
+                      <p>
+                        {ep.description}
+                      </p>
+
+                      <button
+                        className="watchEpisode"
+
+                        onClick={()=>{
+
+                          setCurrentVideo(
+                            ep.video
+                          )
+
+                          setPlayerOpen(true)
+
+                        }}
+                      >
+
+                        Assistir
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            </>
+
+          )}
 
         </div>
 
