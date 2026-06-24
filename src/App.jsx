@@ -1,6 +1,9 @@
 import "./App.css"
 
-import { useState } from "react"
+import {
+  useState,
+  useEffect
+} from "react"
 
 import {
   Search,
@@ -10,9 +13,17 @@ import {
   Shield,
   X,
   Plus,
-  Trash2,
-  Pencil
+  Trash2
 } from "lucide-react"
+
+import { db }
+from "./firebase"
+
+import {
+  doc,
+  setDoc,
+  getDoc
+} from "firebase/firestore"
 
 export default function App(){
 
@@ -45,53 +56,7 @@ export default function App(){
   useState(null)
 
   const [contents,setContents] =
-  useState([
-
-    {
-      id:1,
-
-      type:"series",
-
-      title:"Arcane",
-
-      description:
-      "Duas irmãs entram em lados opostos em uma guerra entre tecnologia e magia.",
-
-      cover:
-      "https://images.alphacoders.com/118/1181423.jpg",
-
-      banner:
-      "https://wallpapercave.com/wp/wp9429848.jpg",
-
-      seasons:[
-
-        {
-          number:1,
-
-          episodes:[
-
-            {
-              number:1,
-
-              title:"Bem-vindo",
-
-              description:
-              "O começo da história.",
-
-              thumb:
-              "https://images6.alphacoders.com/118/1181426.jpg",
-
-              video:
-              "https://www.youtube.com/embed/fXmAurh012s"
-            }
-
-          ]
-        }
-
-      ]
-    }
-
-  ])
+  useState([])
 
   const [newContent,setNewContent] =
   useState({
@@ -104,6 +69,71 @@ export default function App(){
     banner:""
 
   })
+
+  useEffect(()=>{
+
+    async function loadData(){
+
+      try{
+
+        const ref =
+        doc(
+          db,
+          "streamflix",
+          "data"
+        )
+
+        const snap =
+        await getDoc(ref)
+
+        if(
+          snap.exists() &&
+          snap.data().contents
+        ){
+
+          setContents(
+            snap.data().contents
+          )
+
+        }
+
+      }catch(err){
+
+        console.log(err)
+
+      }
+
+    }
+
+    loadData()
+
+  },[])
+
+  async function saveData(data){
+
+    try{
+
+      await setDoc(
+
+        doc(
+          db,
+          "streamflix",
+          "data"
+        ),
+
+        {
+          contents:data
+        }
+
+      )
+
+    }catch(err){
+
+      console.log(err)
+
+    }
+
+  }
 
   function loginAdmin(){
 
@@ -124,14 +154,7 @@ export default function App(){
 
   function addContent(){
 
-    if(!newContent.title){
-
-      alert("Digite um título")
-      return
-
-    }
-
-    setContents([
+    const updated = [
 
       ...contents,
 
@@ -165,149 +188,31 @@ export default function App(){
 
       }
 
-    ])
+    ]
 
-    setNewContent({
+    setContents(updated)
 
-      type:"series",
-
-      title:"",
-      description:"",
-      cover:"",
-      banner:""
-
-    })
+    saveData(updated)
 
   }
 
   function deleteContent(id){
 
-    setContents(
+    const updated =
 
       contents.filter(
         item => item.id !== id
       )
 
-    )
-
-  }
-
-  function addSeason(contentIndex){
-
-    const updated =
-    [...contents]
-
-    updated[
-      contentIndex
-    ]
-    .seasons.push({
-
-      number:
-      updated[
-        contentIndex
-      ]
-      .seasons.length + 1,
-
-      episodes:[]
-
-    })
-
     setContents(updated)
 
-  }
-
-  function addEpisode(
-    contentIndex,
-    seasonIndex
-  ){
-
-    const updated =
-    [...contents]
-
-    updated[
-      contentIndex
-    ]
-    .seasons[
-      seasonIndex
-    ]
-    .episodes.push({
-
-      number:
-      updated[
-        contentIndex
-      ]
-      .seasons[
-        seasonIndex
-      ]
-      .episodes.length + 1,
-
-      title:"Novo episódio",
-
-      description:"Descrição",
-
-      thumb:"",
-      video:""
-
-    })
-
-    setContents(updated)
-
-  }
-
-  function updateEpisode(
-    contentIndex,
-    seasonIndex,
-    epIndex,
-    field,
-    value
-  ){
-
-    const updated =
-    [...contents]
-
-    updated[
-      contentIndex
-    ]
-    .seasons[
-      seasonIndex
-    ]
-    .episodes[
-      epIndex
-    ][field] = value
-
-    setContents(updated)
-
-  }
-
-  function deleteEpisode(
-    contentIndex,
-    seasonIndex,
-    epIndex
-  ){
-
-    const updated =
-    [...contents]
-
-    updated[
-      contentIndex
-    ]
-    .seasons[
-      seasonIndex
-    ]
-    .episodes.splice(
-      epIndex,
-      1
-    )
-
-    setContents(updated)
+    saveData(updated)
 
   }
 
   return(
 
     <div className="app">
-
-      {/* NAVBAR */}
 
       <div className="navbar">
 
@@ -381,47 +286,6 @@ export default function App(){
 
       </div>
 
-      {/* PLAYER */}
-
-      {playerOpen && (
-
-        <div className="playerModal">
-
-          <div className="playerBox">
-
-            <div className="playerHeader">
-
-              <h2>
-                Assistindo
-              </h2>
-
-              <X
-                className="close"
-
-                onClick={()=>
-                  setPlayerOpen(false)
-                }
-              />
-
-            </div>
-
-            <div className="videoContainer">
-
-              <iframe
-                src={currentVideo}
-                allowFullScreen
-              />
-
-            </div>
-
-          </div>
-
-        </div>
-
-      )}
-
-      {/* LOGIN */}
-
       {adminOpen &&
       !logged && (
 
@@ -469,8 +333,6 @@ export default function App(){
 
       )}
 
-      {/* ADMIN */}
-
       {adminOpen &&
       logged && (
 
@@ -511,8 +373,6 @@ export default function App(){
             <input
               placeholder="Título"
 
-              value={newContent.title}
-
               onChange={(e)=>
                 setNewContent({
 
@@ -526,10 +386,6 @@ export default function App(){
 
             <textarea
               placeholder="Descrição"
-
-              value={
-                newContent.description
-              }
 
               onChange={(e)=>
                 setNewContent({
@@ -546,8 +402,6 @@ export default function App(){
             <input
               placeholder="Capa"
 
-              value={newContent.cover}
-
               onChange={(e)=>
                 setNewContent({
 
@@ -561,8 +415,6 @@ export default function App(){
 
             <input
               placeholder="Banner"
-
-              value={newContent.banner}
 
               onChange={(e)=>
                 setNewContent({
@@ -588,256 +440,35 @@ export default function App(){
 
           </div>
 
-          {contents.map(
-            (content,contentIndex)=>(
+          {contents.map(content=>(
 
             <div
               className="contentEditor"
               key={content.id}
             >
 
-              <div
+              <h2>
+                {content.title}
+              </h2>
+
+              <button
+                className="watchEpisode"
+
                 style={{
-                  display:"flex",
-                  justifyContent:
-                  "space-between",
-                  alignItems:"center",
-                  gap:"15px",
-                  flexWrap:"wrap"
+                  background:"#ff3030"
                 }}
+
+                onClick={()=>
+                  deleteContent(
+                    content.id
+                  )
+                }
               >
 
-                <h2>
-                  {content.title}
-                </h2>
+                <Trash2 size={16}/>
+                Excluir
 
-                <button
-                  className="watchEpisode"
-
-                  style={{
-                    background:"#ff3030"
-                  }}
-
-                  onClick={()=>
-                    deleteContent(
-                      content.id
-                    )
-                  }
-                >
-
-                  <Trash2 size={16}/>
-                  Excluir
-
-                </button>
-
-              </div>
-
-              {content.type ===
-              "series" && (
-
-                <>
-
-                  {content.seasons.map(
-                    (
-                      season,
-                      seasonIndex
-                    )=>(
-
-                    <div
-                      key={seasonIndex}
-                    >
-
-                      <div
-                        style={{
-                          display:"flex",
-                          justifyContent:
-                          "space-between",
-                          alignItems:"center",
-                          marginTop:"25px"
-                        }}
-                      >
-
-                        <h3>
-                          Temporada {
-                            season.number
-                          }
-                        </h3>
-
-                        <button
-                          className="watchEpisode"
-
-                          onClick={()=>{
-
-                            addEpisode(
-                              contentIndex,
-                              seasonIndex
-                            )
-
-                          }}
-                        >
-
-                          <Plus size={16}/>
-                          Episódio
-
-                        </button>
-
-                      </div>
-
-                      {season.episodes.map(
-                        (
-                          ep,
-                          epIndex
-                        )=>(
-
-                        <div
-                          className="episodeEditor"
-                          key={epIndex}
-                        >
-
-                          <input
-
-                            value={ep.title}
-
-                            placeholder="Título"
-
-                            onChange={(e)=>
-
-                              updateEpisode(
-
-                                contentIndex,
-                                seasonIndex,
-                                epIndex,
-
-                                "title",
-
-                                e.target.value
-
-                              )
-
-                            }
-                          />
-
-                          <textarea
-
-                            value={
-                              ep.description
-                            }
-
-                            placeholder="Descrição"
-
-                            onChange={(e)=>
-
-                              updateEpisode(
-
-                                contentIndex,
-                                seasonIndex,
-                                epIndex,
-
-                                "description",
-
-                                e.target.value
-
-                              )
-
-                            }
-                          />
-
-                          <input
-
-                            value={ep.thumb}
-
-                            placeholder="Thumb"
-
-                            onChange={(e)=>
-
-                              updateEpisode(
-
-                                contentIndex,
-                                seasonIndex,
-                                epIndex,
-
-                                "thumb",
-
-                                e.target.value
-
-                              )
-
-                            }
-                          />
-
-                          <input
-
-                            value={ep.video}
-
-                            placeholder="Vídeo"
-
-                            onChange={(e)=>
-
-                              updateEpisode(
-
-                                contentIndex,
-                                seasonIndex,
-                                epIndex,
-
-                                "video",
-
-                                e.target.value
-
-                              )
-
-                            }
-                          />
-
-                          <button
-                            className="watchEpisode"
-
-                            style={{
-                              background:"#ff3030"
-                            }}
-
-                            onClick={()=>{
-
-                              deleteEpisode(
-
-                                contentIndex,
-                                seasonIndex,
-                                epIndex
-
-                              )
-
-                            }}
-                          >
-
-                            Excluir Episódio
-
-                          </button>
-
-                        </div>
-
-                      ))}
-
-                    </div>
-
-                  ))}
-
-                  <button
-                    className="watchEpisode"
-
-                    onClick={()=>
-                      addSeason(
-                        contentIndex
-                      )
-                    }
-                  >
-
-                    <Plus size={16}/>
-                    Nova Temporada
-
-                  </button>
-
-                </>
-
-              )}
+              </button>
 
             </div>
 
@@ -847,10 +478,7 @@ export default function App(){
 
       )}
 
-      {/* HOME */}
-
-      {!selectedContent &&
-      !adminOpen && (
+      {!adminOpen && (
 
         <div className="home">
 
@@ -874,9 +502,9 @@ export default function App(){
 
                     <button
 
-                      onClick={()=>
+                      onClick={()=>{
                         setSelectedContent(item)
-                      }
+                      }}
                     >
 
                       <Play fill="white"/>
@@ -892,147 +520,6 @@ export default function App(){
             ))}
 
           </div>
-
-        </div>
-
-      )}
-
-      {/* CONTEUDO */}
-
-      {selectedContent &&
-      !adminOpen && (
-
-        <div className="seriesPage">
-
-          <div className="seriesBanner">
-
-            <img
-              src={
-                selectedContent.banner
-              }
-              alt=""
-            />
-
-            <div className="seriesOverlay"/>
-
-            <div className="seriesInfo">
-
-              <h1>
-                {
-                  selectedContent.title
-                }
-              </h1>
-
-              <p>
-                {
-                  selectedContent
-                  .description
-                }
-              </p>
-
-            </div>
-
-          </div>
-
-          {selectedContent.type ===
-          "series" && (
-
-            <>
-
-              <div className="seasonTabs">
-
-                {selectedContent
-                .seasons.map(
-                  (season,index)=>(
-
-                  <button
-
-                    key={index}
-
-                    className={
-                      selectedSeason ===
-                      index
-                      ? "seasonTab active"
-                      : "seasonTab"
-                    }
-
-                    onClick={()=>
-                      setSelectedSeason(index)
-                    }
-                  >
-
-                    Temporada {
-                      season.number
-                    }
-
-                  </button>
-
-                ))}
-
-              </div>
-
-              <div className="episodesGrid">
-
-                {selectedContent
-                .seasons[
-                  selectedSeason
-                ]
-                ?.episodes
-                ?.map((ep,epIndex)=>(
-
-                  <div
-                    className="episodeCard"
-                    key={epIndex}
-                  >
-
-                    <div className="episodeThumb">
-
-                      <img
-                        src={ep.thumb}
-                        alt=""
-                      />
-
-                    </div>
-
-                    <div className="episodeContent">
-
-                      <h3>
-                        {ep.title}
-                      </h3>
-
-                      <p>
-                        {ep.description}
-                      </p>
-
-                      <button
-                        className="watchEpisode"
-
-                        onClick={()=>{
-
-                          setCurrentVideo(
-                            ep.video
-                          )
-
-                          setPlayerOpen(true)
-
-                        }}
-                      >
-
-                        Assistir
-
-                      </button>
-
-                    </div>
-
-                  </div>
-
-                ))}
-
-              </div>
-
-            </>
-
-          )}
 
         </div>
 
