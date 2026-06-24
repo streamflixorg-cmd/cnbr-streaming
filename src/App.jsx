@@ -27,6 +27,13 @@ import {
 
 export default function App(){
 
+  /* =========================
+     STATES
+  ========================= */
+
+  const [contents,setContents] =
+  useState([])
+
   const [menuOpen,setMenuOpen] =
   useState(false)
 
@@ -56,9 +63,6 @@ export default function App(){
   setSelectedSeason] =
   useState(0)
 
-  const [contents,setContents] =
-  useState([])
-
   const [newContent,setNewContent] =
   useState({
 
@@ -70,6 +74,10 @@ export default function App(){
     banner:""
 
   })
+
+  /* =========================
+     LOAD FIREBASE
+  ========================= */
 
   useEffect(()=>{
 
@@ -87,20 +95,34 @@ export default function App(){
         const snap =
         await getDoc(ref)
 
-        if(
-          snap.exists() &&
-          snap.data().contents
-        ){
+        if(snap.exists()){
 
-          setContents(
-            snap.data().contents
+          const firebaseData =
+          snap.data()
+
+          console.log(
+            "FIREBASE:",
+            firebaseData
           )
+
+          if(
+            firebaseData.contents
+          ){
+
+            setContents([
+              ...firebaseData.contents
+            ])
+
+          }
 
         }
 
       }catch(err){
 
-        console.log(err)
+        console.log(
+          "ERRO FIREBASE:",
+          err
+        )
 
       }
 
@@ -109,6 +131,10 @@ export default function App(){
     loadData()
 
   },[])
+
+  /* =========================
+     SAVE FIREBASE
+  ========================= */
 
   async function saveData(data){
 
@@ -136,6 +162,10 @@ export default function App(){
 
   }
 
+  /* =========================
+     LOGIN
+  ========================= */
+
   function loginAdmin(){
 
     if(
@@ -152,6 +182,10 @@ export default function App(){
     }
 
   }
+
+  /* =========================
+     ADD CONTENT
+  ========================= */
 
   function addContent(){
 
@@ -215,6 +249,10 @@ export default function App(){
 
   }
 
+  /* =========================
+     DELETE CONTENT
+  ========================= */
+
   function deleteContent(id){
 
     const updated =
@@ -227,6 +265,10 @@ export default function App(){
     saveData(updated)
 
   }
+
+  /* =========================
+     ADD SEASON
+  ========================= */
 
   function addSeason(contentId){
 
@@ -252,6 +294,10 @@ export default function App(){
     saveData(updated)
 
   }
+
+  /* =========================
+     ADD EPISODE
+  ========================= */
 
   function addEpisode(
     contentId,
@@ -467,7 +513,7 @@ export default function App(){
 
         <div className="adminPanel">
 
-          {/* NOVO CONTEUDO */}
+          {/* NOVO CONTEÚDO */}
 
           <div className="contentEditor">
 
@@ -581,7 +627,7 @@ export default function App(){
 
           </div>
 
-          {/* LISTA */}
+          {/* CONTEÚDOS */}
 
           {contents.map(
             (content,contentIndex)=>(
@@ -591,114 +637,103 @@ export default function App(){
               key={content.id}
             >
 
-              <div
-                style={{
-                  display:"flex",
-                  flexDirection:"column",
-                  gap:"12px",
-                  marginBottom:"20px"
+              <input
+
+                value={content.title}
+
+                placeholder="Título"
+
+                onChange={(e)=>{
+
+                  const updated =
+                  [...contents]
+
+                  updated[
+                    contentIndex
+                  ]
+                  .title =
+                  e.target.value
+
+                  setContents(updated)
+
+                  saveData(updated)
+
                 }}
-              >
+              />
 
-                <input
+              <textarea
 
-                  value={content.title}
+                value={
+                  content.description
+                }
 
-                  placeholder="Título"
+                placeholder="Descrição"
 
-                  onChange={(e)=>{
+                onChange={(e)=>{
 
-                    const updated =
-                    [...contents]
+                  const updated =
+                  [...contents]
 
-                    updated[
-                      contentIndex
-                    ]
-                    .title =
-                    e.target.value
+                  updated[
+                    contentIndex
+                  ]
+                  .description =
+                  e.target.value
 
-                    setContents(updated)
+                  setContents(updated)
 
-                    saveData(updated)
+                  saveData(updated)
 
-                  }}
-                />
+                }}
+              />
 
-                <textarea
+              <input
 
-                  value={
-                    content.description
-                  }
+                value={content.cover}
 
-                  placeholder="Descrição"
+                placeholder="Capa"
 
-                  onChange={(e)=>{
+                onChange={(e)=>{
 
-                    const updated =
-                    [...contents]
+                  const updated =
+                  [...contents]
 
-                    updated[
-                      contentIndex
-                    ]
-                    .description =
-                    e.target.value
+                  updated[
+                    contentIndex
+                  ]
+                  .cover =
+                  e.target.value
 
-                    setContents(updated)
+                  setContents(updated)
 
-                    saveData(updated)
+                  saveData(updated)
 
-                  }}
-                />
+                }}
+              />
 
-                <input
+              <input
 
-                  value={content.cover}
+                value={content.banner}
 
-                  placeholder="Capa"
+                placeholder="Banner"
 
-                  onChange={(e)=>{
+                onChange={(e)=>{
 
-                    const updated =
-                    [...contents]
+                  const updated =
+                  [...contents]
 
-                    updated[
-                      contentIndex
-                    ]
-                    .cover =
-                    e.target.value
+                  updated[
+                    contentIndex
+                  ]
+                  .banner =
+                  e.target.value
 
-                    setContents(updated)
+                  setContents(updated)
 
-                    saveData(updated)
+                  saveData(updated)
 
-                  }}
-                />
-
-                <input
-
-                  value={content.banner}
-
-                  placeholder="Banner"
-
-                  onChange={(e)=>{
-
-                    const updated =
-                    [...contents]
-
-                    updated[
-                      contentIndex
-                    ]
-                    .banner =
-                    e.target.value
-
-                    setContents(updated)
-
-                    saveData(updated)
-
-                  }}
-                />
-
-              </div>
+                }}
+              />
 
               <button
                 className="deleteBtn"
@@ -773,169 +808,159 @@ export default function App(){
                           key={epIndex}
                         >
 
-                          <div
-                            style={{
-                              display:"flex",
-                              flexDirection:"column",
-                              gap:"12px"
+                          <input
+
+                            value={ep.title}
+
+                            placeholder="Título"
+
+                            onChange={(e)=>{
+
+                              const updated =
+                              [...contents]
+
+                              updated[
+                                contentIndex
+                              ]
+                              .seasons[
+                                seasonIndex
+                              ]
+                              .episodes[
+                                epIndex
+                              ]
+                              .title =
+                              e.target.value
+
+                              setContents(updated)
+
+                              saveData(updated)
+
                             }}
+                          />
+
+                          <textarea
+
+                            value={
+                              ep.description
+                            }
+
+                            placeholder="Descrição"
+
+                            onChange={(e)=>{
+
+                              const updated =
+                              [...contents]
+
+                              updated[
+                                contentIndex
+                              ]
+                              .seasons[
+                                seasonIndex
+                              ]
+                              .episodes[
+                                epIndex
+                              ]
+                              .description =
+                              e.target.value
+
+                              setContents(updated)
+
+                              saveData(updated)
+
+                            }}
+                          />
+
+                          <input
+
+                            value={ep.thumb}
+
+                            placeholder="Thumb"
+
+                            onChange={(e)=>{
+
+                              const updated =
+                              [...contents]
+
+                              updated[
+                                contentIndex
+                              ]
+                              .seasons[
+                                seasonIndex
+                              ]
+                              .episodes[
+                                epIndex
+                              ]
+                              .thumb =
+                              e.target.value
+
+                              setContents(updated)
+
+                              saveData(updated)
+
+                            }}
+                          />
+
+                          <input
+
+                            value={ep.video}
+
+                            placeholder="Vídeo"
+
+                            onChange={(e)=>{
+
+                              const updated =
+                              [...contents]
+
+                              updated[
+                                contentIndex
+                              ]
+                              .seasons[
+                                seasonIndex
+                              ]
+                              .episodes[
+                                epIndex
+                              ]
+                              .video =
+                              e.target.value
+
+                              setContents(updated)
+
+                              saveData(updated)
+
+                            }}
+                          />
+
+                          <button
+
+                            className="deleteBtn"
+
+                            onClick={()=>{
+
+                              const updated =
+                              [...contents]
+
+                              updated[
+                                contentIndex
+                              ]
+                              .seasons[
+                                seasonIndex
+                              ]
+                              .episodes.splice(
+                                epIndex,
+                                1
+                              )
+
+                              setContents(updated)
+
+                              saveData(updated)
+
+                            }}
+
                           >
 
-                            <input
+                            Excluir Episódio
 
-                              value={ep.title}
-
-                              placeholder="Título"
-
-                              onChange={(e)=>{
-
-                                const updated =
-                                [...contents]
-
-                                updated[
-                                  contentIndex
-                                ]
-                                .seasons[
-                                  seasonIndex
-                                ]
-                                .episodes[
-                                  epIndex
-                                ]
-                                .title =
-                                e.target.value
-
-                                setContents(updated)
-
-                                saveData(updated)
-
-                              }}
-                            />
-
-                            <textarea
-
-                              value={
-                                ep.description
-                              }
-
-                              placeholder="Descrição"
-
-                              onChange={(e)=>{
-
-                                const updated =
-                                [...contents]
-
-                                updated[
-                                  contentIndex
-                                ]
-                                .seasons[
-                                  seasonIndex
-                                ]
-                                .episodes[
-                                  epIndex
-                                ]
-                                .description =
-                                e.target.value
-
-                                setContents(updated)
-
-                                saveData(updated)
-
-                              }}
-                            />
-
-                            <input
-
-                              value={ep.thumb}
-
-                              placeholder="Thumb"
-
-                              onChange={(e)=>{
-
-                                const updated =
-                                [...contents]
-
-                                updated[
-                                  contentIndex
-                                ]
-                                .seasons[
-                                  seasonIndex
-                                ]
-                                .episodes[
-                                  epIndex
-                                ]
-                                .thumb =
-                                e.target.value
-
-                                setContents(updated)
-
-                                saveData(updated)
-
-                              }}
-                            />
-
-                            <input
-
-                              value={ep.video}
-
-                              placeholder="Vídeo"
-
-                              onChange={(e)=>{
-
-                                const updated =
-                                [...contents]
-
-                                updated[
-                                  contentIndex
-                                ]
-                                .seasons[
-                                  seasonIndex
-                                ]
-                                .episodes[
-                                  epIndex
-                                ]
-                                .video =
-                                e.target.value
-
-                                setContents(updated)
-
-                                saveData(updated)
-
-                              }}
-                            />
-
-                            <button
-
-                              className="deleteBtn"
-
-                              onClick={()=>{
-
-                                const updated =
-                                [...contents]
-
-                                updated[
-                                  contentIndex
-                                ]
-                                .seasons[
-                                  seasonIndex
-                                ]
-                                .episodes.splice(
-                                  epIndex,
-                                  1
-                                )
-
-                                setContents(updated)
-
-                                saveData(updated)
-
-                              }}
-
-                            >
-
-                              Excluir Episódio
-
-                            </button>
-
-                          </div>
+                          </button>
 
                         </div>
 
@@ -1022,7 +1047,7 @@ export default function App(){
 
       )}
 
-      {/* CONTEUDO */}
+      {/* PAGE */}
 
       {selectedContent &&
       !adminOpen && (
