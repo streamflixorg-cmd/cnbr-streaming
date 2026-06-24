@@ -105,15 +105,74 @@ export default function App(){
             firebaseData
           )
 
-          if(
+          if(firebaseData.contents){
+
+            let loadedContents =
             firebaseData.contents
-          ){
+
+            if(
+              !Array.isArray(
+                loadedContents
+              )
+            ){
+
+              loadedContents =
+              Object.values(
+                loadedContents
+              )
+
+            }
+
+            loadedContents =
+            loadedContents.map(item=>({
+
+              id:
+              item.id ||
+              Date.now() +
+              Math.random(),
+
+              type:
+              item.type ||
+              "movie",
+
+              title:
+              item.title ||
+              "Sem título",
+
+              description:
+              item.description ||
+              "",
+
+              cover:
+              item.cover ||
+              "https://placehold.co/600x900",
+
+              banner:
+              item.banner ||
+              item.cover ||
+              "https://placehold.co/1200x500",
+
+              seasons:
+              item.seasons || []
+
+            }))
+
+            console.log(
+              "CONVERTIDO:",
+              loadedContents
+            )
 
             setContents([
-              ...firebaseData.contents
+              ...loadedContents
             ])
 
           }
+
+        }else{
+
+          console.log(
+            "Documento não encontrado"
+          )
 
         }
 
@@ -513,8 +572,6 @@ export default function App(){
 
         <div className="adminPanel">
 
-          {/* NOVO CONTEÚDO */}
-
           <div className="contentEditor">
 
             <h2>
@@ -626,8 +683,6 @@ export default function App(){
             </button>
 
           </div>
-
-          {/* CONTEÚDOS */}
 
           {contents.map(
             (content,contentIndex)=>(
@@ -749,8 +804,6 @@ export default function App(){
                 Excluir
 
               </button>
-
-              {/* SERIES */}
 
               {content.type ===
               "series" && (
