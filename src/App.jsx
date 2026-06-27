@@ -16,20 +16,16 @@ import {
   Trash2
 } from "lucide-react"
 
-import { db }
-from "./firebase"
+import { db } from "./firebase"
 
 import {
-
   collection,
   getDocs,
   addDoc,
   deleteDoc,
   updateDoc,
   doc
-
-}
-from "firebase/firestore"
+} from "firebase/firestore"
 
 export default function App(){
 
@@ -140,13 +136,13 @@ export default function App(){
 
         const data = []
 
-        querySnapshot.forEach((doc)=>{
+        querySnapshot.forEach((docItem)=>{
 
           data.push({
 
-            firebaseId:doc.id,
+            firebaseId:docItem.id,
 
-            ...doc.data()
+            ...docItem.data()
 
           })
 
@@ -897,9 +893,10 @@ export default function App(){
 
                   </button>
 
-                  {/* TEMPORADAS E EPISODIOS */}
+                  {/* SERIES */}
 
                   {
+
                     content.type ===
                     "series" && (
 
@@ -923,6 +920,8 @@ export default function App(){
                               }
 
                             </h3>
+
+                            {/* EPISODIOS */}
 
                             {season.episodes?.map(
                               (
@@ -1236,9 +1235,8 @@ export default function App(){
 
           </div>
 
-          {/* SERIES */}
-
           {
+
             selectedContent.type ===
             "series" && (
 
@@ -1351,7 +1349,7 @@ export default function App(){
 
             )
 
-          )}
+          }
 
         </div>
 
