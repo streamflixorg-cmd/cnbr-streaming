@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+/* =========================
+   GLOBAL
+========================= */
 
 *{
   margin:0;
@@ -7,323 +9,723 @@
 }
 
 body{
-  background:#050505;
+
+  background:#0b0b0b;
   color:white;
-  font-family:'Poppins',sans-serif;
+
+  font-family:
+  Arial,
+  Helvetica,
+  sans-serif;
+
   overflow-x:hidden;
+
 }
+
+button{
+  border:none;
+  cursor:pointer;
+}
+
+input,
+textarea,
+select{
+
+  width:100%;
+
+  background:#151515;
+
+  border:none;
+
+  outline:none;
+
+  color:white;
+
+  padding:14px;
+
+  border-radius:12px;
+
+  margin-top:10px;
+
+  font-size:15px;
+
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+img{
+  width:100%;
+  display:block;
+}
+
+/* =========================
+   APP
+========================= */
 
 .app{
   min-height:100vh;
 }
 
+/* =========================
+   NAVBAR
+========================= */
+
 .navbar{
+
   width:100%;
-  height:85px;
-  background:#0d0d0d;
+
+  height:75px;
+
+  background:#0f0f0f;
+
+  border-bottom:
+  1px solid #1f1f1f;
+
+  padding:0 25px;
+
   display:flex;
+
   align-items:center;
+
   justify-content:space-between;
-  padding:0 35px;
+
   position:sticky;
+
   top:0;
+
   z-index:999;
+
 }
 
 .logo{
-  font-size:32px;
+
+  font-size:30px;
+
   font-weight:800;
+
   cursor:pointer;
+
 }
 
 .logo span{
-  color:#ff2a2a;
+  color:#e50914;
 }
 
 .navActions{
+
   display:flex;
+
   align-items:center;
+
   gap:20px;
+
 }
 
 .searchBar{
-  background:#111;
-  border:1px solid #222;
+
+  width:280px;
+
+  background:#151515;
+
   border-radius:14px;
+
+  padding:0 14px;
+
   display:flex;
+
   align-items:center;
+
   gap:10px;
-  padding:12px 16px;
-  width:240px;
+
 }
 
 .searchBar input{
-  width:100%;
+
+  margin:0;
+
   background:none;
-  border:none;
-  color:white;
+
+  padding:14px 0;
+
 }
 
 .icons{
+
   display:flex;
+
+  align-items:center;
+
   gap:16px;
+
 }
+
+.icons svg{
+
+  cursor:pointer;
+
+  transition:.2s;
+
+}
+
+.icons svg:hover{
+  color:#e50914;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.menuDropdown{
+
+  position:absolute;
+
+  top:85px;
+
+  right:20px;
+
+  background:#141414;
+
+  border-radius:15px;
+
+  padding:15px;
+
+  width:220px;
+
+  border:1px solid #252525;
+
+}
+
+.menuDropdown button{
+
+  width:100%;
+
+  background:#e50914;
+
+  color:white;
+
+  padding:14px;
+
+  border-radius:12px;
+
+  font-size:15px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:10px;
+
+}
+
+/* =========================
+   HOME
+========================= */
 
 .home{
   padding:30px;
 }
 
 .cardsGrid{
+
   display:grid;
+
   grid-template-columns:
-  repeat(auto-fill,minmax(230px,1fr));
+  repeat(
+    auto-fill,
+    minmax(200px,1fr)
+  );
+
   gap:25px;
+
+}
+
+.movieCard{
+
+  position:relative;
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+  transition:.3s;
+
+}
+
+.movieCard:hover{
+  transform:scale(1.03);
 }
 
 .moviePoster{
-  width:100%;
-  height:350px;
-  border-radius:22px;
-  overflow:hidden;
+
   position:relative;
+
+  width:100%;
+
+  aspect-ratio:2/3;
+
 }
 
 .moviePoster img{
+
   width:100%;
   height:100%;
+
   object-fit:cover;
+
 }
 
 .movieLayer{
+
   position:absolute;
+
   inset:0;
+
   background:
   linear-gradient(
     to top,
     rgba(0,0,0,.9),
     transparent
   );
+
   display:flex;
+
   align-items:flex-end;
+
   justify-content:center;
-  padding-bottom:25px;
+
   opacity:0;
-  transition:.2s;
+
+  transition:.3s;
+
+  padding-bottom:25px;
+
 }
 
-.moviePoster:hover .movieLayer{
+.movieCard:hover
+.movieLayer{
   opacity:1;
 }
 
 .movieLayer button{
-  width:70px;
-  height:70px;
+
+  width:60px;
+  height:60px;
+
   border-radius:50%;
-  border:none;
-  background:#ff2a2a;
+
+  background:#e50914;
+
   color:white;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
 }
+
+/* =========================
+   LOGIN
+========================= */
 
 .loginScreen{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
 
-.loginBox,
-.contentEditor{
-  background:#111;
-  border:1px solid #1f1f1f;
-  border-radius:28px;
-  padding:30px;
+  width:100%;
+
+  min-height:100vh;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:20px;
+
 }
 
 .loginBox{
+
   width:100%;
-  max-width:420px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-}
+  max-width:400px;
 
-input,
-textarea,
-select{
-  width:100%;
-  background:#090909;
-  border:1px solid #1f1f1f;
-  color:white;
-  padding:15px;
-  border-radius:16px;
-}
+  background:#111;
 
-button{
-  cursor:pointer;
-}
+  border:1px solid #252525;
 
-.loginBox button,
-.watchEpisode{
-  background:#ff2a2a;
-  color:white;
-  border:none;
-  padding:14px 18px;
-  border-radius:14px;
-}
+  border-radius:25px;
 
-.adminPanel{
   padding:35px;
-  display:flex;
-  flex-direction:column;
-  gap:30px;
+
 }
 
-.adminTop,
-.seasonTop{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
+.loginBox h1{
   margin-bottom:20px;
 }
 
-.deleteBtn{
-  background:#ff3030;
+.loginBox button{
+
+  width:100%;
+
+  margin-top:15px;
+
+  background:#e50914;
+
   color:white;
-  border:none;
-  padding:12px 18px;
+
+  padding:15px;
+
   border-radius:14px;
+
+  font-size:16px;
+
+  font-weight:700;
+
+}
+
+/* =========================
+   ADMIN
+========================= */
+
+.adminPanel{
+
+  padding:30px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:30px;
+
+}
+
+.contentEditor{
+
+  background:#111;
+
+  border:1px solid #252525;
+
+  border-radius:25px;
+
+  padding:25px;
+
+}
+
+.contentEditor h2{
+  margin-bottom:10px;
+}
+
+.watchEpisode{
+
+  background:#e50914;
+
+  color:white;
+
+  padding:14px 20px;
+
+  border-radius:14px;
+
+  margin-top:15px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:10px;
+
+  font-weight:700;
+
+}
+
+.deleteBtn{
+
+  background:#ff2d2d;
+
+  color:white;
+
+  padding:14px 20px;
+
+  border-radius:14px;
+
+  margin-top:15px;
+
+  width:100%;
+
+  font-weight:700;
+
 }
 
 .episodeAdmin{
-  background:#0b0b0b;
-  border:1px solid #1f1f1f;
-  padding:15px;
-  border-radius:16px;
-  margin-bottom:12px;
+
+  background:#181818;
+
+  border-radius:18px;
+
+  padding:18px;
+
+  margin-top:20px;
+
 }
 
-.seriesBanner{
-  width:100%;
-  height:70vh;
-  position:relative;
-}
-
-.seriesBanner img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.seriesOverlay{
-  position:absolute;
-  inset:0;
-  background:
-  linear-gradient(
-    to top,
-    #050505,
-    rgba(0,0,0,.2)
-  );
-}
-
-.seriesInfo{
-  position:absolute;
-  left:50px;
-  bottom:60px;
-  z-index:2;
-  max-width:650px;
-}
-
-.seriesInfo h1{
-  font-size:58px;
-  margin-bottom:15px;
-}
-
-.seasonTabs{
-  display:flex;
-  gap:12px;
-  padding:35px;
-  flex-wrap:wrap;
-}
-
-.seasonTab{
-  background:#111;
-  color:white;
-  border:1px solid #222;
-  padding:12px 22px;
-  border-radius:14px;
-}
-
-.seasonTab.active{
-  background:#ff2a2a;
-}
-
-.episodesGrid{
-  display:grid;
-  grid-template-columns:
-  repeat(auto-fill,minmax(340px,1fr));
-  gap:25px;
-  padding:0 35px 50px;
-}
-
-.episodeCard{
-  background:#101010;
-  border:1px solid #1f1f1f;
-  border-radius:24px;
-  overflow:hidden;
-}
-
-.episodeThumb{
-  width:100%;
-  height:210px;
-}
-
-.episodeThumb img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.episodeContent{
-  padding:22px;
-}
+/* =========================
+   PLAYER
+========================= */
 
 .playerModal{
+
   position:fixed;
+
   inset:0;
-  background:rgba(0,0,0,.92);
-  z-index:99999;
+
+  background:
+  rgba(0,0,0,.92);
+
   display:flex;
+
   align-items:center;
+
   justify-content:center;
-  padding:30px;
+
+  z-index:9999;
+
+  padding:20px;
+
 }
 
 .playerBox{
+
   width:100%;
+
   max-width:1200px;
+
   background:#111;
-  border-radius:28px;
+
+  border-radius:25px;
+
   overflow:hidden;
+
 }
 
 .playerHeader{
+
+  height:70px;
+
+  background:#151515;
+
+  padding:0 25px;
+
   display:flex;
+
   align-items:center;
+
   justify-content:space-between;
-  padding:22px 28px;
+
+}
+
+.close{
+  cursor:pointer;
 }
 
 .videoContainer{
+
   width:100%;
+
   aspect-ratio:16/9;
+
+  background:black;
+
 }
 
 .videoContainer iframe{
+
   width:100%;
   height:100%;
+
   border:none;
+
 }
+
+/* =========================
+   SERIES PAGE
+========================= */
+
+.seriesPage{
+  width:100%;
+}
+
+.seriesBanner{
+
+  position:relative;
+
+  width:100%;
+
+  height:520px;
+
+}
+
+.seriesBanner img{
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+}
+
+.seriesOverlay{
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+  linear-gradient(
+    to top,
+    #0b0b0b,
+    rgba(0,0,0,.2)
+  );
+
+}
+
+.seriesInfo{
+
+  position:absolute;
+
+  left:40px;
+
+  bottom:40px;
+
+  max-width:700px;
+
+  z-index:2;
+
+}
+
+.seriesInfo h1{
+
+  font-size:55px;
+
+  margin-bottom:15px;
+
+}
+
+.seriesInfo p{
+
+  color:#ddd;
+
+  line-height:1.6;
+
+  font-size:17px;
+
+}
+
+/* =========================
+   TEMPORADAS
+========================= */
+
+.seasonTabs{
+
+  display:flex;
+
+  gap:15px;
+
+  padding:25px 30px;
+
+  flex-wrap:wrap;
+
+}
+
+.seasonTab{
+
+  background:#1a1a1a;
+
+  color:white;
+
+  padding:12px 20px;
+
+  border-radius:12px;
+
+}
+
+.seasonTab.active{
+  background:#e50914;
+}
+
+/* =========================
+   EPISODIOS
+========================= */
+
+.episodesGrid{
+
+  padding:0 30px 40px;
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(
+    auto-fill,
+    minmax(300px,1fr)
+  );
+
+  gap:25px;
+
+}
+
+.episodeCard{
+
+  background:#111;
+
+  border:1px solid #252525;
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+}
+
+.episodeCard img{
+
+  width:100%;
+
+  height:180px;
+
+  object-fit:cover;
+
+}
+
+.episodeCard h3{
+
+  padding:15px 15px 5px;
+
+}
+
+.episodeCard p{
+
+  padding:0 15px;
+
+  color:#bcbcbc;
+
+  font-size:14px;
+
+  line-height:1.5;
+
+}
+
+.episodeCard button{
+  margin:15px;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
 
 @media(max-width:900px){
 
@@ -331,27 +733,44 @@ button{
     display:none;
   }
 
-  .cardsGrid{
-    grid-template-columns:
-    repeat(2,1fr);
+  .seriesInfo h1{
+    font-size:38px;
   }
 
-  .moviePoster{
-    height:240px;
+}
+
+@media(max-width:700px){
+
+  .navbar{
+    padding:0 15px;
   }
 
-  .episodesGrid{
-    grid-template-columns:1fr;
-    padding:0 20px 40px;
+  .home{
+    padding:20px;
+  }
+
+  .adminPanel{
+    padding:20px;
+  }
+
+  .seriesBanner{
+    height:400px;
   }
 
   .seriesInfo{
-    left:25px;
-    right:25px;
+
+    left:20px;
+    right:20px;
+    bottom:20px;
+
   }
 
   .seriesInfo h1{
-    font-size:38px;
+    font-size:30px;
+  }
+
+  .episodesGrid{
+    padding:0 20px 30px;
   }
 
 }
