@@ -69,10 +69,6 @@ export default function App(){
   setSelectedSeason] =
   useState(0)
 
-  const [openedEditor,
-  setOpenedEditor] =
-  useState(null)
-
   const [newContent,setNewContent] =
   useState({
 
@@ -691,361 +687,318 @@ export default function App(){
 
           {/* LISTA */}
 
-          {contents.map(
-            (content)=>(
-              
+          {contents.map((content)=>(
+
             <div
               className="contentEditor"
               key={content.firebaseId}
             >
 
-              {/* HEADER */}
+              <details>
 
-              <div
-                className="editorTop"
-              >
-
-                <div>
-
-                  <h2>
-                    {content.title}
-                  </h2>
-
-                  <small>
-
-                    {
-                      content.type ===
-                      "series"
-
-                      ? "Série"
-
-                      : "Filme"
-                    }
-
-                  </small>
-
-                </div>
-
-                <button
-
-                  className="watchEpisode"
-
-                  onClick={()=>{
-
-                    if(
-                      openedEditor ===
-                      content.firebaseId
-                    ){
-
-                      setOpenedEditor(null)
-
-                    }else{
-
-                      setOpenedEditor(
-                        content.firebaseId
-                      )
-
-                    }
-
-                  }}
+                <summary
+                  className="adminSummary"
                 >
 
-                  {
+                  <div>
 
-                    openedEditor ===
-                    content.firebaseId
+                    <h2>
+                      {content.title}
+                    </h2>
 
-                    ? "Fechar"
+                    <small>
 
-                    : "Editar"
+                      {
+                        content.type ===
+                        "series"
 
-                  }
+                        ? "Série"
 
-                </button>
-
-              </div>
-
-              {/* EDITOR */}
-
-              {
-
-                openedEditor ===
-                content.firebaseId && (
-
-                  <div
-                    className="editorContent"
-                  >
-
-                    <input
-                      value={content.title}
-
-                      onChange={async(e)=>{
-
-                        const updated =
-                        e.target.value
-
-                        const newArray =
-                        contents.map(item=>
-
-                          item.firebaseId ===
-                          content.firebaseId
-
-                          ? {
-                            ...item,
-                            title:updated
-                          }
-
-                          : item
-
-                        )
-
-                        setContents(newArray)
-
-                        await updateContent(
-
-                          content.firebaseId,
-
-                          {
-                            title:updated
-                          }
-
-                        )
-
-                      }}
-                    />
-
-                    <textarea
-                      value={
-                        content.description
+                        : "Filme"
                       }
 
-                      onChange={async(e)=>{
-
-                        const updated =
-                        e.target.value
-
-                        const newArray =
-                        contents.map(item=>
-
-                          item.firebaseId ===
-                          content.firebaseId
-
-                          ? {
-                            ...item,
-                            description:updated
-                          }
-
-                          : item
-
-                        )
-
-                        setContents(newArray)
-
-                        await updateContent(
-
-                          content.firebaseId,
-
-                          {
-                            description:
-                            updated
-                          }
-
-                        )
-
-                      }}
-                    />
-
-                    <input
-                      value={content.cover}
-
-                      onChange={async(e)=>{
-
-                        const updated =
-                        e.target.value
-
-                        const newArray =
-                        contents.map(item=>
-
-                          item.firebaseId ===
-                          content.firebaseId
-
-                          ? {
-                            ...item,
-                            cover:updated
-                          }
-
-                          : item
-
-                        )
-
-                        setContents(newArray)
-
-                        await updateContent(
-
-                          content.firebaseId,
-
-                          {
-                            cover:updated
-                          }
-
-                        )
-
-                      }}
-                    />
-
-                    <input
-                      value={content.banner}
-
-                      onChange={async(e)=>{
-
-                        const updated =
-                        e.target.value
-
-                        const newArray =
-                        contents.map(item=>
-
-                          item.firebaseId ===
-                          content.firebaseId
-
-                          ? {
-                            ...item,
-                            banner:updated
-                          }
-
-                          : item
-
-                        )
-
-                        setContents(newArray)
-
-                        await updateContent(
-
-                          content.firebaseId,
-
-                          {
-                            banner:updated
-                          }
-
-                        )
-
-                      }}
-                    />
-
-                    <button
-                      className="deleteBtn"
-
-                      onClick={()=>
-                        deleteContent(
-                          content.firebaseId
-                        )
-                      }
-                    >
-
-                      <Trash2 size={16}/>
-                      Excluir
-
-                    </button>
-
-                    {/* SERIES */}
-
-                    {
-                      content.type ===
-                      "series" && (
-
-                        <>
-
-                          {content.seasons?.map(
-                            (
-                              season,
-                              seasonIndex
-                            )=>(
-
-                            <div
-                              key={seasonIndex}
-                              className="episodeAdmin"
-                            >
-
-                              <h3>
-                                Temporada {
-                                  season.number
-                                }
-                              </h3>
-
-                              {season.episodes?.map(
-                                (
-                                  ep,
-                                  epIndex
-                                )=>(
-
-                                <div
-                                  key={epIndex}
-                                  className="episodeAdmin"
-                                >
-
-                                  <input
-                                    value={ep.title}
-                                    readOnly
-                                  />
-
-                                  <input
-                                    value={ep.video}
-                                    readOnly
-                                  />
-
-                                </div>
-
-                              ))}
-
-                              <button
-                                className="watchEpisode"
-
-                                onClick={()=>{
-
-                                  addEpisode(
-                                    content,
-                                    seasonIndex
-                                  )
-
-                                }}
-                              >
-
-                                <Plus size={16}/>
-                                Episódio
-
-                              </button>
-
-                            </div>
-
-                          ))}
-
-                          <button
-                            className="watchEpisode"
-
-                            onClick={()=>
-                              addSeason(content)
-                            }
-                          >
-
-                            <Plus size={16}/>
-                            Temporada
-
-                          </button>
-
-                        </>
-
-                      )
-
-                    }
+                    </small>
 
                   </div>
 
-                )
+                </summary>
 
-              }
+                <div
+                  className="editorContent"
+                >
+
+                  <input
+                    value={content.title}
+
+                    onChange={async(e)=>{
+
+                      const updated =
+                      e.target.value
+
+                      const newArray =
+                      contents.map(item=>
+
+                        item.firebaseId ===
+                        content.firebaseId
+
+                        ? {
+                          ...item,
+                          title:updated
+                        }
+
+                        : item
+
+                      )
+
+                      setContents(newArray)
+
+                      await updateContent(
+
+                        content.firebaseId,
+
+                        {
+                          title:updated
+                        }
+
+                      )
+
+                    }}
+                  />
+
+                  <textarea
+                    value={
+                      content.description
+                    }
+
+                    onChange={async(e)=>{
+
+                      const updated =
+                      e.target.value
+
+                      const newArray =
+                      contents.map(item=>
+
+                        item.firebaseId ===
+                        content.firebaseId
+
+                        ? {
+                          ...item,
+                          description:updated
+                        }
+
+                        : item
+
+                      )
+
+                      setContents(newArray)
+
+                      await updateContent(
+
+                        content.firebaseId,
+
+                        {
+                          description:
+                          updated
+                        }
+
+                      )
+
+                    }}
+                  />
+
+                  <input
+                    value={content.cover}
+
+                    onChange={async(e)=>{
+
+                      const updated =
+                      e.target.value
+
+                      const newArray =
+                      contents.map(item=>
+
+                        item.firebaseId ===
+                        content.firebaseId
+
+                        ? {
+                          ...item,
+                          cover:updated
+                        }
+
+                        : item
+
+                      )
+
+                      setContents(newArray)
+
+                      await updateContent(
+
+                        content.firebaseId,
+
+                        {
+                          cover:updated
+                        }
+
+                      )
+
+                    }}
+                  />
+
+                  <input
+                    value={content.banner}
+
+                    onChange={async(e)=>{
+
+                      const updated =
+                      e.target.value
+
+                      const newArray =
+                      contents.map(item=>
+
+                        item.firebaseId ===
+                        content.firebaseId
+
+                        ? {
+                          ...item,
+                          banner:updated
+                        }
+
+                        : item
+
+                      )
+
+                      setContents(newArray)
+
+                      await updateContent(
+
+                        content.firebaseId,
+
+                        {
+                          banner:updated
+                        }
+
+                      )
+
+                    }}
+                  />
+
+                  <button
+                    className="deleteBtn"
+
+                    onClick={()=>
+                      deleteContent(
+                        content.firebaseId
+                      )
+                    }
+                  >
+
+                    <Trash2 size={16}/>
+                    Excluir
+
+                  </button>
+
+                </div>
+
+              </details>
 
             </div>
 
           ))}
+
+        </div>
+
+      )}
+
+      {/* HOME */}
+
+      {!selectedContent &&
+      !adminOpen && (
+
+        <div className="home">
+
+          <div className="cardsGrid">
+
+            {contents.map(item=>(
+
+              <div
+                className="movieCard"
+                key={item.firebaseId}
+              >
+
+                <div className="moviePoster">
+
+                  <img
+                    src={item.cover}
+                    alt=""
+                  />
+
+                  <div className="movieLayer">
+
+                    <button
+
+                      onClick={()=>{
+
+                        setSelectedContent(item)
+
+                      }}
+                    >
+
+                      <Play
+                        fill="white"
+                      />
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* PAGE */}
+
+      {selectedContent &&
+      !adminOpen && (
+
+        <div className="seriesPage">
+
+          <div className="seriesBanner">
+
+            <img
+              src={
+                selectedContent.banner
+              }
+              alt=""
+            />
+
+            <div className="seriesOverlay"/>
+
+            <div className="seriesInfo">
+
+              <h1>
+                {
+                  selectedContent.title
+                }
+              </h1>
+
+              <p>
+                {
+                  selectedContent
+                  .description
+                }
+              </p>
+
+            </div>
+
+          </div>
 
         </div>
 
