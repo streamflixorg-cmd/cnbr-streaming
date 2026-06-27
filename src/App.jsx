@@ -20,12 +20,22 @@ import { db }
 from "./firebase"
 
 import {
-  doc,
-  setDoc,
-  getDoc
-} from "firebase/firestore"
+
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc
+
+}
+from "firebase/firestore"
 
 export default function App(){
+
+  /* =========================
+     STATES
+  ========================= */
 
   const [contents,setContents] =
   useState([])
@@ -72,7 +82,7 @@ export default function App(){
   })
 
   /* =========================
-     DRIVE FIX
+     DRIVE LINK FIX
   ========================= */
 
   function formatDriveLink(url){
@@ -109,7 +119,7 @@ export default function App(){
   }
 
   /* =========================
-     FIREBASE LOAD
+     LOAD FIREBASE
   ========================= */
 
   useEffect(()=>{
@@ -118,39 +128,31 @@ export default function App(){
 
       try{
 
-        const ref =
-        doc(
-          db,
-          "contents",
-          "main"
+        const querySnapshot =
+        await getDocs(
+
+          collection(
+            db,
+            "contents"
+          )
+
         )
 
-        const snap =
-        await getDoc(ref)
+        const data = []
 
-        if(snap.exists()){
+        querySnapshot.forEach((doc)=>{
 
-          const firebaseData =
-          snap.data()
+          data.push({
 
-          if(firebaseData.contents){
+            firebaseId:doc.id,
 
-            const loaded =
-            Array.isArray(
-              firebaseData.contents
-            )
+            ...doc.data()
 
-            ? firebaseData.contents
+          })
 
-            : Object.values(
-              firebaseData.contents
-            )
+        })
 
-            setContents(loaded)
-
-          }
-
-        }
+        setContents(data)
 
       }catch(err){
 
@@ -163,36 +165,6 @@ export default function App(){
     loadData()
 
   },[])
-
-  /* =========================
-     FIREBASE SAVE
-  ========================= */
-
-  async function saveData(data){
-
-    try{
-
-      await setDoc(
-
-        doc(
-          db,
-          "contents",
-          "main"
-        ),
-
-        {
-          contents:data
-        }
-
-      )
-
-    }catch(err){
-
-      console.log(err)
-
-    }
-
-  }
 
   /* =========================
      LOGIN
@@ -219,47 +191,56 @@ export default function App(){
      ADD CONTENT
   ========================= */
 
-  function addContent(){
+  async function addContent(){
 
-    const updated = [
+    try{
 
-      ...contents,
+      await addDoc(
 
-      {
+        collection(
+          db,
+          "contents"
+        ),
 
-        id:Date.now(),
+        {
 
-        type:newContent.type,
+          id:Date.now(),
 
-        title:newContent.title,
+          type:newContent.type,
 
-        description:
-        newContent.description,
+          title:newContent.title,
 
-        cover:newContent.cover,
+          description:
+          newContent.description,
 
-        banner:newContent.banner,
+          cover:newContent.cover,
 
-        seasons:
-        newContent.type ===
-        "series"
+          banner:newContent.banner,
 
-        ? [
-          {
-            number:1,
-            episodes:[]
-          }
-        ]
+          seasons:
+          newContent.type ===
+          "series"
 
-        : []
+          ? [
+            {
+              number:1,
+              episodes:[]
+            }
+          ]
 
-      }
+          : []
 
-    ]
+        }
 
-    setContents(updated)
+      )
 
-    saveData(updated)
+      window.location.reload()
+
+    }catch(err){
+
+      console.log(err)
+
+    }
 
   }
 
@@ -267,16 +248,66 @@ export default function App(){
      DELETE CONTENT
   ========================= */
 
-  function deleteContent(id){
+  async function deleteContent(firebaseId){
 
-    const updated =
-    contents.filter(
-      item=>item.id!==id
-    )
+    try{
 
-    setContents(updated)
+      await deleteDoc(
 
-    saveData(updated)
+        doc(
+          db,
+          "contents",
+          firebaseId
+        )
+
+      )
+
+      setContents(
+
+        contents.filter(
+          item=>
+          item.firebaseId
+          !== firebaseId
+        )
+
+      )
+
+    }catch(err){
+
+      console.log(err)
+
+    }
+
+  }
+
+  /* =========================
+     UPDATE CONTENT
+  ========================= */
+
+  async function updateContent(
+    firebaseId,
+    updatedData
+  ){
+
+    try{
+
+      await updateDoc(
+
+        doc(
+          db,
+          "contents",
+          firebaseId
+        ),
+
+        updatedData
+
+      )
+
+    }catch(err){
+
+      console.log(err)
+
+    }
 
   }
 
@@ -284,28 +315,34 @@ export default function App(){
      ADD SEASON
   ========================= */
 
-  function addSeason(contentId){
+  async function addSeason(content){
 
-    const updated =
-    [...contents]
+    const updatedSeasons = [
 
-    const content =
-    updated.find(
-      item=>item.id===contentId
+      ...content.seasons,
+
+      {
+
+        number:
+        content.seasons.length + 1,
+
+        episodes:[]
+
+      }
+
+    ]
+
+    await updateContent(
+
+      content.firebaseId,
+
+      {
+        seasons:updatedSeasons
+      }
+
     )
 
-    content.seasons.push({
-
-      number:
-      content.seasons.length + 1,
-
-      episodes:[]
-
-    })
-
-    setContents(updated)
-
-    saveData(updated)
+    window.location.reload()
 
   }
 
@@ -313,28 +350,21 @@ export default function App(){
      ADD EPISODE
   ========================= */
 
-  function addEpisode(
-    contentId,
+  async function addEpisode(
+    content,
     seasonIndex
   ){
 
-    const updated =
-    [...contents]
+    const updatedSeasons =
+    [...content.seasons]
 
-    const content =
-    updated.find(
-      item=>item.id===contentId
-    )
-
-    content
-    .seasons[
+    updatedSeasons[
       seasonIndex
     ]
     .episodes.push({
 
       number:
-      content
-      .seasons[
+      updatedSeasons[
         seasonIndex
       ]
       .episodes.length + 1,
@@ -349,9 +379,17 @@ export default function App(){
 
     })
 
-    setContents(updated)
+    await updateContent(
 
-    saveData(updated)
+      content.firebaseId,
+
+      {
+        seasons:updatedSeasons
+      }
+
+    )
+
+    window.location.reload()
 
   }
 
@@ -646,112 +684,23 @@ export default function App(){
           </div>
 
           {contents.map(
-            (
-              content,
-              contentIndex
-            )=>(
-
+            (content)=>(
+              
             <div
               className="contentEditor"
-              key={content.id}
+              key={content.firebaseId}
             >
 
-              <input
-
-                value={content.title}
-
-                onChange={(e)=>{
-
-                  const updated =
-                  [...contents]
-
-                  updated[
-                    contentIndex
-                  ]
-                  .title =
-                  e.target.value
-
-                  setContents(updated)
-
-                  saveData(updated)
-
-                }}
-              />
-
-              <textarea
-
-                value={
-                  content.description
-                }
-
-                onChange={(e)=>{
-
-                  const updated =
-                  [...contents]
-
-                  updated[
-                    contentIndex
-                  ]
-                  .description =
-                  e.target.value
-
-                  setContents(updated)
-
-                  saveData(updated)
-
-                }}
-              />
-
-              <input
-
-                value={content.cover}
-
-                onChange={(e)=>{
-
-                  const updated =
-                  [...contents]
-
-                  updated[
-                    contentIndex
-                  ]
-                  .cover =
-                  e.target.value
-
-                  setContents(updated)
-
-                  saveData(updated)
-
-                }}
-              />
-
-              <input
-
-                value={content.banner}
-
-                onChange={(e)=>{
-
-                  const updated =
-                  [...contents]
-
-                  updated[
-                    contentIndex
-                  ]
-                  .banner =
-                  e.target.value
-
-                  setContents(updated)
-
-                  saveData(updated)
-
-                }}
-              />
+              <h2>
+                {content.title}
+              </h2>
 
               <button
                 className="deleteBtn"
 
                 onClick={()=>
                   deleteContent(
-                    content.id
+                    content.firebaseId
                   )
                 }
               >
@@ -761,9 +710,289 @@ export default function App(){
 
               </button>
 
+              {content.type ===
+              "series" && (
+
+                <>
+
+                  {content.seasons?.map(
+                    (
+                      season,
+                      seasonIndex
+                    )=>(
+
+                    <div
+                      key={seasonIndex}
+                      className="episodeAdmin"
+                    >
+
+                      <h3>
+                        Temporada {
+                          season.number
+                        }
+                      </h3>
+
+                      {season.episodes?.map(
+                        (
+                          ep,
+                          epIndex
+                        )=>(
+
+                        <div
+                          key={epIndex}
+                          className="episodeAdmin"
+                        >
+
+                          <input
+                            value={ep.title}
+                            readOnly
+                          />
+
+                          <input
+                            value={ep.video}
+                            readOnly
+                          />
+
+                        </div>
+
+                      ))}
+
+                      <button
+                        className="watchEpisode"
+
+                        onClick={()=>{
+
+                          addEpisode(
+                            content,
+                            seasonIndex
+                          )
+
+                        }}
+                      >
+
+                        <Plus size={16}/>
+                        Episódio
+
+                      </button>
+
+                    </div>
+
+                  ))}
+
+                  <button
+                    className="watchEpisode"
+
+                    onClick={()=>
+                      addSeason(content)
+                    }
+                  >
+
+                    <Plus size={16}/>
+                    Temporada
+
+                  </button>
+
+                </>
+
+              )}
+
             </div>
 
           ))}
+
+        </div>
+
+      )}
+
+      {/* HOME */}
+
+      {!selectedContent &&
+      !adminOpen && (
+
+        <div className="home">
+
+          <div className="cardsGrid">
+
+            {contents.map(item=>(
+
+              <div
+                className="movieCard"
+                key={item.firebaseId}
+              >
+
+                <div className="moviePoster">
+
+                  <img
+                    src={item.cover}
+                    alt=""
+                  />
+
+                  <div className="movieLayer">
+
+                    <button
+
+                      onClick={()=>{
+
+                        setSelectedContent(item)
+
+                      }}
+                    >
+
+                      <Play
+                        fill="white"
+                      />
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* SERIES PAGE */}
+
+      {selectedContent &&
+      !adminOpen && (
+
+        <div className="seriesPage">
+
+          <div className="seriesBanner">
+
+            <img
+              src={
+                selectedContent.banner
+              }
+              alt=""
+            />
+
+            <div className="seriesOverlay"/>
+
+            <div className="seriesInfo">
+
+              <h1>
+                {
+                  selectedContent.title
+                }
+              </h1>
+
+              <p>
+                {
+                  selectedContent
+                  .description
+                }
+              </p>
+
+            </div>
+
+          </div>
+
+          {selectedContent.type ===
+          "series" && (
+
+            <>
+
+              <div className="seasonTabs">
+
+                {selectedContent
+                .seasons?.map(
+                  (
+                    season,
+                    index
+                  )=>(
+
+                  <button
+
+                    key={index}
+
+                    className={
+                      selectedSeason ===
+                      index
+                      ? "seasonTab active"
+                      : "seasonTab"
+                    }
+
+                    onClick={()=>
+                      setSelectedSeason(index)
+                    }
+                  >
+
+                    Temporada {
+                      season.number
+                    }
+
+                  </button>
+
+                ))}
+
+              </div>
+
+              <div className="episodesGrid">
+
+                {selectedContent
+                .seasons[
+                  selectedSeason
+                ]
+                ?.episodes
+                ?.map((ep,epIndex)=>(
+
+                  <div
+                    className="episodeCard"
+                    key={epIndex}
+                  >
+
+                    <img
+                      src={ep.thumb}
+                      alt=""
+                    />
+
+                    <h3>
+                      {ep.title}
+                    </h3>
+
+                    <p>
+                      {ep.description}
+                    </p>
+
+                    <button
+                      className="watchEpisode"
+
+                      onClick={()=>{
+
+                        setCurrentVideo(
+
+                          formatDriveLink(
+                            ep.video
+                          )
+
+                        )
+
+                        setPlayerOpen(true)
+
+                      }}
+                    >
+
+                      Assistir
+
+                    </button>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            </>
+
+          )}
 
         </div>
 
