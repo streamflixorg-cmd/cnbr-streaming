@@ -10,7 +10,7 @@ import {
   Home,
   Menu,
   Play,
- Shield,
+  Shield,
   X,
   Plus,
   Trash2
@@ -22,12 +22,16 @@ import {
   collection,
   getDocs,
   addDoc,
- deleteDoc,
+  deleteDoc,
   updateDoc,
   doc
 } from "firebase/firestore"
 
 export default function App(){
+
+  /* =========================
+     STATES
+  ========================= */
 
   const [contents,setContents] =
   useState([])
@@ -74,7 +78,7 @@ export default function App(){
   })
 
   /* =========================
-     DRIVE FIX + QUALIDADE
+     GOOGLE DRIVE
   ========================= */
 
   function formatDriveLink(url){
@@ -111,7 +115,7 @@ export default function App(){
   }
 
   /* =========================
-     FIREBASE
+     LOAD FIREBASE
   ========================= */
 
   useEffect(()=>{
@@ -311,12 +315,12 @@ export default function App(){
 
     const updatedSeasons = [
 
-      ...content.seasons,
+      ...(content.seasons || []),
 
       {
 
         number:
-        content.seasons.length + 1,
+        (content.seasons?.length || 0) + 1,
 
         episodes:[]
 
@@ -579,6 +583,8 @@ export default function App(){
 
         <div className="adminPanel">
 
+          {/* NOVO CONTEUDO */}
+
           <div className="contentEditor">
 
             <h2>
@@ -689,6 +695,8 @@ export default function App(){
             </button>
 
           </div>
+
+          {/* LISTA */}
 
           {contents.map((content)=>(
 
@@ -899,6 +907,244 @@ export default function App(){
                     Excluir
 
                   </button>
+
+                  {/* TEMPORADAS */}
+
+                  {
+                    content.type ===
+                    "series" && (
+
+                      <>
+
+                        {content.seasons?.map(
+                          (
+                            season,
+                            seasonIndex
+                          )=>(
+
+                          <div
+                            key={seasonIndex}
+                            className="episodeAdmin"
+                          >
+
+                            <h3>
+
+                              Temporada {
+                                season.number
+                              }
+
+                            </h3>
+
+                            {/* EPISODIOS */}
+
+                            {season.episodes?.map(
+                              (
+                                ep,
+                                epIndex
+                              )=>(
+
+                              <div
+                                key={epIndex}
+                                className="episodeAdmin"
+                              >
+
+                                <input
+                                  value={ep.title}
+
+                                  onChange={async(e)=>{
+
+                                    const updated =
+                                    e.target.value
+
+                                    const newContents =
+                                    [...contents]
+
+                                    const contentIndex =
+                                    newContents.findIndex(
+                                      item=>
+                                      item.firebaseId ===
+                                      content.firebaseId
+                                    )
+
+                                    newContents[
+                                      contentIndex
+                                    ]
+                                    .seasons[
+                                      seasonIndex
+                                    ]
+                                    .episodes[
+                                      epIndex
+                                    ]
+                                    .title = updated
+
+                                    setContents(
+                                      newContents
+                                    )
+
+                                    await updateContent(
+
+                                      content.firebaseId,
+
+                                      {
+                                        seasons:
+                                        newContents[
+                                          contentIndex
+                                        ].seasons
+                                      }
+
+                                    )
+
+                                  }}
+                                />
+
+                                <input
+                                  placeholder="Thumb"
+
+                                  value={ep.thumb}
+
+                                  onChange={async(e)=>{
+
+                                    const updated =
+                                    e.target.value
+
+                                    const newContents =
+                                    [...contents]
+
+                                    const contentIndex =
+                                    newContents.findIndex(
+                                      item=>
+                                      item.firebaseId ===
+                                      content.firebaseId
+                                    )
+
+                                    newContents[
+                                      contentIndex
+                                    ]
+                                    .seasons[
+                                      seasonIndex
+                                    ]
+                                    .episodes[
+                                      epIndex
+                                    ]
+                                    .thumb = updated
+
+                                    setContents(
+                                      newContents
+                                    )
+
+                                    await updateContent(
+
+                                      content.firebaseId,
+
+                                      {
+                                        seasons:
+                                        newContents[
+                                          contentIndex
+                                        ].seasons
+                                      }
+
+                                    )
+
+                                  }}
+                                />
+
+                                <input
+                                  placeholder="Video"
+
+                                  value={ep.video}
+
+                                  onChange={async(e)=>{
+
+                                    const updated =
+                                    e.target.value
+
+                                    const newContents =
+                                    [...contents]
+
+                                    const contentIndex =
+                                    newContents.findIndex(
+                                      item=>
+                                      item.firebaseId ===
+                                      content.firebaseId
+                                    )
+
+                                    newContents[
+                                      contentIndex
+                                    ]
+                                    .seasons[
+                                      seasonIndex
+                                    ]
+                                    .episodes[
+                                      epIndex
+                                    ]
+                                    .video = updated
+
+                                    setContents(
+                                      newContents
+                                    )
+
+                                    await updateContent(
+
+                                      content.firebaseId,
+
+                                      {
+                                        seasons:
+                                        newContents[
+                                          contentIndex
+                                        ].seasons
+                                      }
+
+                                    )
+
+                                  }}
+                                />
+
+                              </div>
+
+                            ))}
+
+                            <button
+                              className="watchEpisode"
+
+                              onClick={()=>{
+
+                                addEpisode(
+                                  content,
+                                  seasonIndex
+                                )
+
+                              }}
+                            >
+
+                              <Plus size={16}/>
+
+                              Episódio
+
+                            </button>
+
+                          </div>
+
+                        ))}
+
+                        <button
+                          className="watchEpisode"
+
+                          onClick={()=>
+                            addSeason(content)
+                          }
+                        >
+
+                          <Plus size={16}/>
+
+                          Temporada
+
+                        </button>
+
+                      </>
+
+                    )
+
+                  }
 
                 </div>
 
