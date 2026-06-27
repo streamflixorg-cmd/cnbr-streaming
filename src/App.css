@@ -1,5 +1,5 @@
 /* =========================
-   GLOBAL
+   RESET
 ========================= */
 
 *{
@@ -102,7 +102,7 @@ img{
 
 .logo{
 
-  font-size:30px;
+  font-size:32px;
 
   font-weight:800;
 
@@ -476,7 +476,7 @@ img{
 }
 
 /* =========================
-   PLAYER
+   PLAYER FIX
 ========================= */
 
 .playerModal{
@@ -485,8 +485,7 @@ img{
 
   inset:0;
 
-  background:
-  rgba(0,0,0,.92);
+  background:rgba(0,0,0,.92);
 
   display:flex;
 
@@ -494,7 +493,7 @@ img{
 
   justify-content:center;
 
-  z-index:9999;
+  z-index:99999;
 
   padding:20px;
 
@@ -502,13 +501,17 @@ img{
 
 .playerBox{
 
+  position:relative;
+
   width:100%;
 
-  max-width:1200px;
+  max-width:1000px;
+
+  max-height:90vh;
 
   background:#111;
 
-  border-radius:25px;
+  border-radius:20px;
 
   overflow:hidden;
 
@@ -516,11 +519,11 @@ img{
 
 .playerHeader{
 
-  height:70px;
+  width:100%;
 
-  background:#151515;
+  height:60px;
 
-  padding:0 25px;
+  background:#181818;
 
   display:flex;
 
@@ -528,10 +531,19 @@ img{
 
   justify-content:space-between;
 
+  padding:0 20px;
+
+  color:white;
+
 }
 
 .close{
+
   cursor:pointer;
+
+  min-width:35px;
+  min-height:35px;
+
 }
 
 .videoContainer{
@@ -539,6 +551,8 @@ img{
   width:100%;
 
   aspect-ratio:16/9;
+
+  max-height:calc(90vh - 60px);
 
   background:black;
 
