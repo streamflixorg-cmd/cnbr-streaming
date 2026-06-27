@@ -84,15 +84,23 @@ export default function App(){
     if(!url) return ""
 
     if(
+      url.includes("/preview")
+    ){
+
+      return url
+
+    }
+
+    if(
       url.includes(
         "drive.google.com"
       )
     ){
 
       const match =
-      url.match(/\/d\/(.*?)\//)
+      url.match(/\/d\/([^/]+)/)
 
-      if(match){
+      if(match && match[1]){
 
         return `https://drive.google.com/file/d/${match[1]}/preview`
 
@@ -1002,192 +1010,6 @@ export default function App(){
             </div>
 
           ))}
-
-        </div>
-
-      )}
-
-      {/* HOME */}
-
-      {!selectedContent &&
-      !adminOpen && (
-
-        <div className="home">
-
-          <div className="cardsGrid">
-
-            {contents.map(item=>(
-
-              <div
-                className="movieCard"
-                key={item.id}
-              >
-
-                <div className="moviePoster">
-
-                  <img
-                    src={item.cover}
-                    alt=""
-                  />
-
-                  <div className="movieLayer">
-
-                    <button
-
-                      onClick={()=>{
-                        setSelectedContent(item)
-                      }}
-                    >
-
-                      <Play fill="white"/>
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-      )}
-
-      {/* CONTENT PAGE */}
-
-      {selectedContent &&
-      !adminOpen && (
-
-        <div className="seriesPage">
-
-          <div className="seriesBanner">
-
-            <img
-              src={
-                selectedContent.banner
-              }
-              alt=""
-            />
-
-            <div className="seriesOverlay"/>
-
-            <div className="seriesInfo">
-
-              <h1>
-                {
-                  selectedContent.title
-                }
-              </h1>
-
-              <p>
-                {
-                  selectedContent
-                  .description
-                }
-              </p>
-
-            </div>
-
-          </div>
-
-          {selectedContent.type ===
-          "series" && (
-
-            <>
-
-              <div className="seasonTabs">
-
-                {selectedContent
-                .seasons.map(
-                  (
-                    season,
-                    index
-                  )=>(
-
-                  <button
-
-                    key={index}
-
-                    className={
-                      selectedSeason ===
-                      index
-                      ? "seasonTab active"
-                      : "seasonTab"
-                    }
-
-                    onClick={()=>
-                      setSelectedSeason(index)
-                    }
-                  >
-
-                    Temporada {
-                      season.number
-                    }
-
-                  </button>
-
-                ))}
-
-              </div>
-
-              <div className="episodesGrid">
-
-                {selectedContent
-                .seasons[
-                  selectedSeason
-                ]
-                ?.episodes
-                ?.map((ep,epIndex)=>(
-
-                  <div
-                    className="episodeCard"
-                    key={epIndex}
-                  >
-
-                    <img
-                      src={ep.thumb}
-                      alt=""
-                    />
-
-                    <h3>
-                      {ep.title}
-                    </h3>
-
-                    <p>
-                      {ep.description}
-                    </p>
-
-                    <button
-                      className="watchEpisode"
-
-                      onClick={()=>{
-
-                        setCurrentVideo(
-                          ep.video
-                        )
-
-                        setPlayerOpen(true)
-
-                      }}
-                    >
-
-                      Assistir
-
-                    </button>
-
-                  </div>
-
-                ))}
-
-              </div>
-
-            </>
-
-          )}
 
         </div>
 
