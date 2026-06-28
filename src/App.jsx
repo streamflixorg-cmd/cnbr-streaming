@@ -73,7 +73,9 @@ export default function App(){
     title:"",
     description:"",
     cover:"",
-    banner:""
+    banner:"",
+
+    video:""
 
   })
 
@@ -243,6 +245,8 @@ export default function App(){
           cover:newContent.cover,
 
           banner:newContent.banner,
+
+          video:newContent.video || "",
 
           seasons:
           newContent.type ===
@@ -699,6 +703,29 @@ export default function App(){
                 })
               }
             />
+
+            {
+              newContent.type ===
+              "movie" && (
+
+                <input
+                  placeholder="Link do Filme"
+
+                  value={newContent.video}
+
+                  onChange={(e)=>
+                    setNewContent({
+
+                      ...newContent,
+
+                      video:e.target.value
+
+                    })
+                  }
+                />
+
+              )
+            }
 
             <button
               className="watchEpisode"
@@ -1378,6 +1405,41 @@ export default function App(){
                 </div>
 
               </>
+
+            )
+
+          }
+
+          {
+
+            selectedContent.type ===
+            "movie" && (
+
+              <div className="movieWatchArea">
+
+                <button
+                  className="watchEpisode"
+
+                  onClick={()=>{
+
+                    setCurrentVideo(
+
+                      formatDriveLink(
+                        selectedContent.video
+                      )
+
+                    )
+
+                    setPlayerOpen(true)
+
+                  }}
+                >
+
+                  Assistir Filme
+
+                </button>
+
+              </div>
 
             )
 
