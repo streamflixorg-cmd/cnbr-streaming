@@ -338,7 +338,23 @@ export default function App(){
 
     )
 
-    window.location.reload()
+    setContents(
+
+      contents.map(item=>
+
+        item.firebaseId ===
+        content.firebaseId
+
+        ? {
+          ...item,
+          seasons:updatedSeasons
+        }
+
+        : item
+
+      )
+
+    )
 
   }
 
@@ -385,7 +401,23 @@ export default function App(){
 
     )
 
-    window.location.reload()
+    setContents(
+
+      contents.map(item=>
+
+        item.firebaseId ===
+        content.firebaseId
+
+        ? {
+          ...item,
+          seasons:updatedSeasons
+        }
+
+        : item
+
+      )
+
+    )
 
   }
 
