@@ -899,6 +899,55 @@ export default function App(){
                     }}
                   />
 
+
+                  {
+                    content.type ===
+                    "movie" && (
+
+                      <input
+                        placeholder="Link do Filme"
+
+                        value={content.video || ""}
+
+                        onChange={async(e)=>{
+
+                          const updated =
+                          e.target.value
+
+                          const newArray =
+                          contents.map(item=>
+
+                            item.firebaseId ===
+                            content.firebaseId
+
+                            ? {
+                              ...item,
+                              video:updated
+                            }
+
+                            : item
+
+                          )
+
+                          setContents(newArray)
+
+                          await updateContent(
+
+                            content.firebaseId,
+
+                            {
+                              video:updated
+                            }
+
+                          )
+
+                        }}
+                      />
+
+                    )
+
+                  }
+
                   <input
                     value={content.banner}
 
@@ -1143,6 +1192,64 @@ export default function App(){
 
                                   }}
                                 />
+
+                                <button
+                                  className="deleteBtn"
+
+                                  onClick={async()=>{
+
+                                    const updatedSeasons =
+                                    [...content.seasons]
+
+                                    updatedSeasons[
+                                      seasonIndex
+                                    ]
+                                    .episodes =
+                                    updatedSeasons[
+                                      seasonIndex
+                                    ]
+                                    .episodes.filter(
+                                      (_,i)=>
+                                      i !== epIndex
+                                    )
+
+                                    await updateContent(
+
+                                      content.firebaseId,
+
+                                      {
+                                        seasons:
+                                        updatedSeasons
+                                      }
+
+                                    )
+
+                                    setContents(
+
+                                      contents.map(item=>
+
+                                        item.firebaseId ===
+                                        content.firebaseId
+
+                                        ? {
+                                          ...item,
+                                          seasons:
+                                          updatedSeasons
+                                        }
+
+                                        : item
+
+                                      )
+
+                                    )
+
+                                  }}
+                                >
+
+                                  Excluir Episódio
+
+                                </button>
+
 
                               </div>
 
