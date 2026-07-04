@@ -538,6 +538,17 @@ export default function App(){
               <iframe
                 src={currentVideo}
                 allowFullScreen
+
+          loading="lazy"
+
+          referrerPolicy="no-referrer"
+
+          sandbox="
+          allow-same-origin
+          allow-scripts
+          allow-presentation
+          allow-forms
+          allow-popups"
               />
 
             </div>
