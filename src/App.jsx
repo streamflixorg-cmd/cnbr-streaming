@@ -16,7 +16,10 @@ import {
   Trash2
 } from "lucide-react"
 
-import { db } from "./firebase"
+import {
+  db,
+  storage
+} from "./firebase"
 
 import {
   collection,
@@ -26,6 +29,12 @@ import {
   updateDoc,
   doc
 } from "firebase/firestore"
+
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "firebase/storage"
 
 export default function App(){
 
@@ -66,6 +75,8 @@ export default function App(){
   useState(0)
 
   const [newContent,setNewContent] =
+
+const [uploading,setUploading] = useState(false)
   useState({
 
     type:"series",
@@ -220,7 +231,50 @@ export default function App(){
      ADD CONTENT
   ========================= */
 
-  async function addContent(){
+  
+
+async function uploadVideo(file){
+
+  try{
+
+    setUploading(true)
+
+    const fileName =
+    `${Date.now()}-${file.name}`
+
+    const storageRef =
+    ref(
+      storage,
+      `videos/${fileName}`
+    )
+
+    await uploadBytes(
+      storageRef,
+      file
+    )
+
+    const downloadURL =
+    await getDownloadURL(
+      storageRef
+    )
+
+    setUploading(false)
+
+    return downloadURL
+
+  }catch(err){
+
+    console.log(err)
+
+    setUploading(false)
+
+    return ""
+
+  }
+
+}
+
+async function addContent(){
 
     try{
 
@@ -899,55 +953,6 @@ export default function App(){
                     }}
                   />
 
-
-                  {
-                    content.type ===
-                    "movie" && (
-
-                      <input
-                        placeholder="Link do Filme"
-
-                        value={content.video || ""}
-
-                        onChange={async(e)=>{
-
-                          const updated =
-                          e.target.value
-
-                          const newArray =
-                          contents.map(item=>
-
-                            item.firebaseId ===
-                            content.firebaseId
-
-                            ? {
-                              ...item,
-                              video:updated
-                            }
-
-                            : item
-
-                          )
-
-                          setContents(newArray)
-
-                          await updateContent(
-
-                            content.firebaseId,
-
-                            {
-                              video:updated
-                            }
-
-                          )
-
-                        }}
-                      />
-
-                    )
-
-                  }
-
                   <input
                     value={content.banner}
 
@@ -1192,64 +1197,6 @@ export default function App(){
 
                                   }}
                                 />
-
-                                <button
-                                  className="deleteBtn"
-
-                                  onClick={async()=>{
-
-                                    const updatedSeasons =
-                                    [...content.seasons]
-
-                                    updatedSeasons[
-                                      seasonIndex
-                                    ]
-                                    .episodes =
-                                    updatedSeasons[
-                                      seasonIndex
-                                    ]
-                                    .episodes.filter(
-                                      (_,i)=>
-                                      i !== epIndex
-                                    )
-
-                                    await updateContent(
-
-                                      content.firebaseId,
-
-                                      {
-                                        seasons:
-                                        updatedSeasons
-                                      }
-
-                                    )
-
-                                    setContents(
-
-                                      contents.map(item=>
-
-                                        item.firebaseId ===
-                                        content.firebaseId
-
-                                        ? {
-                                          ...item,
-                                          seasons:
-                                          updatedSeasons
-                                        }
-
-                                        : item
-
-                                      )
-
-                                    )
-
-                                  }}
-                                >
-
-                                  Excluir Episódio
-
-                                </button>
-
 
                               </div>
 
