@@ -80,6 +80,43 @@ export default function App(){
   })
 
   /* =========================
+     DRIVE FIX
+  ========================= */
+
+  function formatDriveLink(url){
+
+    if(!url) return ""
+
+    if(
+      url.includes("/preview")
+    ){
+
+      return url
+
+    }
+
+    if(
+      url.includes(
+        "drive.google.com"
+      )
+    ){
+
+      const match =
+      url.match(/\/d\/([^/]+)/)
+
+      if(match && match[1]){
+
+        return `https://drive.google.com/file/d/${match[1]}/preview`
+
+      }
+
+    }
+
+    return url
+
+  }
+
+  /* =========================
      FIREBASE LOAD
   ========================= */
 
@@ -498,28 +535,10 @@ export default function App(){
 
             <div className="videoContainer">
 
-              <video
-
-                controls
-
-                autoPlay
-
-                playsInline
-
-                style={{
-                  width:"100%",
-                  height:"100%",
-                  background:"#000"
-                }}
-
-              >
-
-                <source
-                  src={currentVideo}
-                  type="video/mp4"
-                />
-
-              </video>
+              <iframe
+                src={currentVideo}
+                allowFullScreen
+              />
 
             </div>
 
@@ -1469,7 +1488,9 @@ export default function App(){
 
                             setCurrentVideo(
 
-                              ep.video
+                              formatDriveLink(
+                                ep.video
+                              )
 
                             )
 
@@ -1510,7 +1531,9 @@ export default function App(){
 
                     setCurrentVideo(
 
-                      selectedContent.video
+                      formatDriveLink(
+                        selectedContent.video
+                      )
 
                     )
 
