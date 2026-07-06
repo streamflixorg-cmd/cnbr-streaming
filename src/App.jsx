@@ -16,10 +16,7 @@ import {
   Trash2
 } from "lucide-react"
 
-import {
-  db,
-  storage
-} from "./firebase"
+import { db } from "./firebase"
 
 import {
   collection,
@@ -29,12 +26,6 @@ import {
   updateDoc,
   doc
 } from "firebase/firestore"
-
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "firebase/storage"
 
 export default function App(){
 
@@ -75,8 +66,6 @@ export default function App(){
   useState(0)
 
   const [newContent,setNewContent] =
-
-const [uploading,setUploading] = useState(false)
   useState({
 
     type:"series",
@@ -91,44 +80,8 @@ const [uploading,setUploading] = useState(false)
   })
 
   /* =========================
-     DRIVE FIX
-  ========================= */
-
-  function formatDriveLink(url){
-
-    if(!url) return ""
-
-    if(
-      url.includes("/preview")
-    ){
-
-      return url
-
-    }
-
-    if(
-      url.includes(
-        "drive.google.com"
-      )
-    ){
-
-      const match =
-      url.match(/\/d\/([^/]+)/)
-
-      if(match && match[1]){
-
-        return `https://drive.google.com/file/d/${match[1]}/preview`
-
-      }
-
-    }
-
-    return url
-
-  }
-
-  /* =========================
      FIREBASE LOAD
+  ========================= */
   ========================= */
 
   useEffect(()=>{
@@ -231,50 +184,7 @@ const [uploading,setUploading] = useState(false)
      ADD CONTENT
   ========================= */
 
-  
-
-async function uploadVideo(file){
-
-  try{
-
-    setUploading(true)
-
-    const fileName =
-    `${Date.now()}-${file.name}`
-
-    const storageRef =
-    ref(
-      storage,
-      `videos/${fileName}`
-    )
-
-    await uploadBytes(
-      storageRef,
-      file
-    )
-
-    const downloadURL =
-    await getDownloadURL(
-      storageRef
-    )
-
-    setUploading(false)
-
-    return downloadURL
-
-  }catch(err){
-
-    console.log(err)
-
-    setUploading(false)
-
-    return ""
-
-  }
-
-}
-
-async function addContent(){
+  async function addContent(){
 
     try{
 
@@ -589,10 +499,28 @@ async function addContent(){
 
             <div className="videoContainer">
 
-              <iframe
-                src={currentVideo}
-                allowFullScreen
-              />
+              <video
+
+                controls
+
+                autoPlay
+
+                playsInline
+
+                style={{
+                  width:"100%",
+                  height:"100%",
+                  background:"#000"
+                }}
+
+              >
+
+                <source
+                  src={currentVideo}
+                  type="video/mp4"
+                />
+
+              </video>
 
             </div>
 
@@ -953,6 +881,55 @@ async function addContent(){
                     }}
                   />
 
+
+                  {
+                    content.type ===
+                    "movie" && (
+
+                      <input
+                        placeholder="Link do Filme"
+
+                        value={content.video || ""}
+
+                        onChange={async(e)=>{
+
+                          const updated =
+                          e.target.value
+
+                          const newArray =
+                          contents.map(item=>
+
+                            item.firebaseId ===
+                            content.firebaseId
+
+                            ? {
+                              ...item,
+                              video:updated
+                            }
+
+                            : item
+
+                          )
+
+                          setContents(newArray)
+
+                          await updateContent(
+
+                            content.firebaseId,
+
+                            {
+                              video:updated
+                            }
+
+                          )
+
+                        }}
+                      />
+
+                    )
+
+                  }
+
                   <input
                     value={content.banner}
 
@@ -1198,6 +1175,64 @@ async function addContent(){
                                   }}
                                 />
 
+                                <button
+                                  className="deleteBtn"
+
+                                  onClick={async()=>{
+
+                                    const updatedSeasons =
+                                    [...content.seasons]
+
+                                    updatedSeasons[
+                                      seasonIndex
+                                    ]
+                                    .episodes =
+                                    updatedSeasons[
+                                      seasonIndex
+                                    ]
+                                    .episodes.filter(
+                                      (_,i)=>
+                                      i !== epIndex
+                                    )
+
+                                    await updateContent(
+
+                                      content.firebaseId,
+
+                                      {
+                                        seasons:
+                                        updatedSeasons
+                                      }
+
+                                    )
+
+                                    setContents(
+
+                                      contents.map(item=>
+
+                                        item.firebaseId ===
+                                        content.firebaseId
+
+                                        ? {
+                                          ...item,
+                                          seasons:
+                                          updatedSeasons
+                                        }
+
+                                        : item
+
+                                      )
+
+                                    )
+
+                                  }}
+                                >
+
+                                  Excluir Episódio
+
+                                </button>
+
+
                               </div>
 
                             ))}
@@ -1435,9 +1470,7 @@ async function addContent(){
 
                             setCurrentVideo(
 
-                              formatDriveLink(
-                                ep.video
-                              )
+                              ep.video
 
                             )
 
@@ -1478,9 +1511,7 @@ async function addContent(){
 
                     setCurrentVideo(
 
-                      formatDriveLink(
-                        selectedContent.video
-                      )
+                      selectedContent.video
 
                     )
 
