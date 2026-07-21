@@ -83,39 +83,19 @@ export default function App(){
      DRIVE FIX
   ========================= */
 
-  function formatDriveLink(url){
+  function openPlayer(url){
 
-    if(!url) return ""
+  if(!url){
 
-    if(
-      url.includes("/preview")
-    ){
+    alert("Vídeo indisponível")
 
-      return url
-
-    }
-
-    if(
-      url.includes(
-        "drive.google.com"
-      )
-    ){
-
-      const match =
-      url.match(/\/d\/([^/]+)/)
-
-      if(match && match[1]){
-
-        return `https://drive.google.com/file/d/${match[1]}/preview`
-
-      }
-
-    }
-
-    return url
+    return
 
   }
 
+  openPlayer(ep.video)
+
+}
   /* =========================
      FIREBASE LOAD
   ========================= */
