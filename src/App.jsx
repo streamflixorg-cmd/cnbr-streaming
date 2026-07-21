@@ -1,3 +1,10 @@
+import Header from "./components/Header";
+import SearchBar from "./components/SearchBar";
+import MovieCard from "./components/MovieCard";
+import Banner from "./components/Banner";
+import Player from "./components/Player";
+import AdminPanel from "./components/AdminPanel";
+
 import "./App.css"
 
 import {
@@ -1299,44 +1306,19 @@ export default function App(){
 
           <div className="cardsGrid">
 
-            {contents.map(item=>(
-
-              <div
-                className="movieCard"
-                key={item.firebaseId}
-              >
-
-                <div className="moviePoster">
-
-                  <img
-                    src={item.cover}
-                    alt=""
-                  />
-
-                  <div className="movieLayer">
-
-                    <button
-
-                      onClick={()=>{
-
-                        setSelectedContent(item)
-
-                      }}
-                    >
-
-                      <Play
-                        fill="white"
-                      />
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            ))}
+        {contents.map((item) => (
+  <MovieCard
+    key={item.firebaseId}
+    item={{
+      id: item.firebaseId,
+      image: item.cover,
+      title: item.title,
+      category: item.type === "series" ? "Série" : "Filme",
+      year: item.year || ""
+    }}
+    onClick={() => setSelectedContent(item)}
+  />
+))}
 
           </div>
 
