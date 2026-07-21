@@ -1,9 +1,9 @@
-import Header from "./components/Header";
-import SearchBar from "./components/SearchBar";
-import MovieCard from "./components/MovieCard";
-import Banner from "./components/Banner";
-import Player from "./components/Player";
-import AdminPanel from "./components/AdminPanel";
+import Header from "./components/header";
+import SearchBar from "./components/searchbar";
+import MovieCard from "./components/movieCard";
+import Banner from "./components/banner";
+import Player from "./components/player";
+import AdminPanel from "./components/adminpanel";
 
 import "./App.css"
 
