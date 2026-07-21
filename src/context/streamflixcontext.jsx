@@ -1,8 +1,8 @@
 import {
-    createContext,
-    useContext,
-    useEffect,
-    useState
+  createContext,
+  useContext,
+  useEffect,
+  useState
 } from "react";
 
 import { getMovies } from "../services/movieService";
@@ -12,60 +12,42 @@ const StreamflixContext = createContext();
 
 export function StreamflixProvider({ children }) {
 
-    const [movies, setMovies] = useState([]);
-    const [series, setSeries] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [series, setSeries] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const [loading, setLoading] = useState(true);
+  async function loadData() {
+    try {
+      const movieList = await getMovies();
+      const seriesList = await getSeries();
 
-    async function loadData() {
-
-        setLoading(true);
-
-        try {
-
-            const movieList = await getMovies();
-            const seriesList = await getSeries();
-
-            setMovies(movieList);
-            setSeries(seriesList);
-
-        } catch (error) {
-
-            console.error(error);
-
-        }
-
-        setLoading(false);
-
+      setMovies(movieList);
+      setSeries(seriesList);
+    } catch (error) {
+      console.error(error);
     }
 
-    useEffect(() => {
+    setLoading(false);
+  }
 
-        loadData();
+  useEffect(() => {
+    loadData();
+  }, []);
 
-    }, []);
-
-    return (
-
-        <StreamflixContext.Provider
-            value={{
-                movies,
-                series,
-                loading,
-                reload: loadData
-            }}
-        >
-
-            {children}
-
-        </StreamflixContext.Provider>
-
-    );
-
+  return (
+    <StreamflixContext.Provider
+      value={{
+        movies,
+        series,
+        loading,
+        reload: loadData
+      }}
+    >
+      {children}
+    </StreamflixContext.Provider>
+  );
 }
 
 export function useStreamflix() {
-
-    return useContext(StreamflixContext);
-
+  return useContext(StreamflixContext);
 }
