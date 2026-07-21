@@ -1,0 +1,69 @@
+.hero{
+    width:100%;
+    height:85vh;
+    background-image:url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1600&auto=format&fit=crop");
+    background-size:cover;
+    background-position:center;
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+}
+
+.heroOverlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        rgba(0,0,0,.2),
+        rgba(0,0,0,.55),
+        #0f0f0f
+    );
+}
+
+.heroContent{
+    position:relative;
+    z-index:2;
+    padding:70px;
+    max-width:700px;
+}
+
+.heroTag{
+    color:#E50914;
+    font-weight:bold;
+    letter-spacing:3px;
+}
+
+.heroContent h1{
+    margin-top:15px;
+    color:white;
+    font-size:64px;
+}
+
+.heroContent p{
+    margin-top:20px;
+    color:#ddd;
+    font-size:20px;
+    line-height:32px;
+}
+
+.heroButtons{
+    display:flex;
+    gap:15px;
+    margin-top:35px;
+}
+
+.playButton{
+    background:white;
+    color:black;
+    padding:15px 35px;
+    border-radius:8px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.infoButton{
+    background:rgba(255,255,255,.2);
+    color:white;
+    padding:15px 35px;
+    border-radius:8px;
+    backdrop-filter:blur(10px);
+}

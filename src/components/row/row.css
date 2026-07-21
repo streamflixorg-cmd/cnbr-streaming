@@ -1,0 +1,19 @@
+.row{
+    padding:25px 50px;
+}
+
+.row h2{
+    color:white;
+    margin-bottom:18px;
+}
+
+.rowScroll{
+    display:flex;
+    gap:18px;
+    overflow-x:auto;
+    scrollbar-width:none;
+}
+
+.rowScroll::-webkit-scrollbar{
+    display:none;
+}
